@@ -126,7 +126,7 @@ preferences["Jack J"]=("Finn","George S","Sam S R")
 preferences["Ralph"]=("","","")
 
 mutPair=[]
-
+["","","",12,12.5]
 #Adding people who prefer each other as tuples into a list, mutPair
 for pair in itertools.combinations(people,2):
   if pair[0] in preferences[pair[1]] and pair[1] in preferences[pair[0]]:
@@ -253,12 +253,13 @@ while internalCopy!=[]:
     if compGroup in forbidden:
       print("Forbidden")
       continue
-    print(weightedOptions)
+    internal2=list(weightedOptions)
     for counter,element in enumerate(weightedOptions):
       print(element)
       if element[1] in forbidden:
         print("^ forbidden")
-        ##########weightedOptions.pop(counter)
+        internal2.remove(element)
+    weightedOptions=list(internal2)
     if weightedOptions!=[]:
       selectedOption=weightedOptions[0][1]
       intermediary.append(compGroup+selectedOption)
@@ -278,7 +279,6 @@ print(finished)
 #print("\n \n \n \n \n")
 #print(combineForSort(mutPref))
 
-
 '''
 #Extracting the worth values to group
 for index, setgroups in enumerate(mutPref):
@@ -286,10 +286,9 @@ for index, setgroups in enumerate(mutPref):
   happiness=detFit(mutPref, fitOptions)[index]
   print(happiness)
 #  print("\n")
-
 '''
 
-
+print("\n \n \n")
 #All the sad lonely people who didn't get paired up at the beginning
 #pepehands
 #https://xkcd.com/314/
