@@ -3,24 +3,29 @@ import itertools;
 from collections import defaultdict
 from tkinter import *
 
+
+#whole program is in a function to allow a restart button
 def start():
   global rowCounter
   global preferences
   global people
   global root
+  #generating the root window
   root=Tk()
-
+  backcolour="Azure"
+  root.geometry("515x200")
+  root.configure(bg=backcolour)
   root.winfo_toplevel().title("Desync's Seating Planner")
-
-  tableSizeLabel=Label(root,text="Max seats per table:")
+  #generating labels for buttons
+  tableSizeLabel=Label(root,text="Max seats per table:", bg=backcolour)
   tableSizeLabel.grid(row=0,column=0,sticky=E,pady=10)
   tableSize=Entry(root)
   tableSize.grid(row=0,column=1)
-  spacer=Label(root)
+  spacer=Label(root, bg=backcolour)
   spacer.grid(row=1)
 
-  nameLabel=Label(root,text="Name:")
-  preferenceLabel=Label(root,text="Preferences:")
+  nameLabel=Label(root,text="Name:",bg=backcolour)
+  preferenceLabel=Label(root,text="Preferences:",bg=backcolour)
 
   nameLabel.grid(row=2,sticky=W,padx=20)
   preferenceLabel.grid(row=2,column=1,sticky=W)
@@ -32,18 +37,8 @@ def start():
   pref2List=[]
   pref3List=[]
 
-  def clearFields():
-    global preferences
-    global people
-    global rowCounter
-    preferences.clear()
-    people.clear()
-    for row,nEntry in enumerate(nameList):
-      nEntry.delete(0,END)
-      pref1List[row].delete(0,END)
-      pref2List[row].delete(0,END)
-      pref3List[row].delete(0,END)
-
+  #generating 5 initial rows of entries
+  #rowCounter is used later to add more rows
   rowCounter=2
   for Row in range(5):
     nameEntry=Entry(root)
@@ -60,6 +55,8 @@ def start():
     pref3Entry.grid(column=3,row=Row+3)
     rowCounter+=1
 
+  #people is a list of guests
+  #preferences is a list of 
   people=[]
   preferences={}
 
@@ -100,7 +97,6 @@ def start():
       worthGroup.append([r for r in listTogether if r])
     return worthGroup
 
-
   def worthKey(inputlist):
     maximum=0
     for counter,sublist in enumerate(inputlist):
@@ -120,7 +116,7 @@ def start():
           people.append(nEntry.get())
         preferences[nEntry.get()]=(str(pref1List[rows].get()),str(pref2List[rows].get()),str(pref3List[rows].get()))
         if pref1List[rows].get()=="" or pref2List[rows].get()=="" or pref3List[rows].get()=="":
-          errorMessage=Label(root,text="Empty Preference")
+          errorMessage=Label(root,text="Empty Preference",fg="RED",bg=backcolour)
           errorMessage.grid(row=1,column=1,sticky=NW)
           raise
     print(preferences)
@@ -128,12 +124,16 @@ def start():
     try:
       int(tableSize.get())
     except:
-      errorMessage=Label(root,text="Input Error")
+      errorMessage=Label(root,text="Input Error",fg="RED",bg=backcolour)
       errorMessage.grid(row=1,column=1,sticky=NW)
       raise
     seatingMax=int(tableSize.get())
+    if len(people)<seatingMax:
+      errorMessage=Label(root,text="Not enough data",fg="RED",bg=backcolour)
+      errorMessage.grid(row=1,column=1,sticky=NW)
+      raise
     if seatingMax<3:
-      errorMessage=Label(root,text="Tables must be >2")
+      errorMessage=Label(root,text="Tables must be >2",fg="RED",bg=backcolour)
       errorMessage.grid(row=1,column=1,sticky=NW)
       raise
     def createOptionList(inputGroupList):
@@ -269,17 +269,22 @@ def start():
     root.maxsize(root.winfo_width(), root.winfo_height()+20)
 
   runButton=Button(root,text="Execute",bg="WHITE",fg="BLACK",command=execute)
+  runButton.configure(height=1,width=8)
   runButton.grid(row=0,column=3,sticky=E)
 
 
   nameList[-1].bind("<Key>", addRow)
-  clearButton=Button(root,text="Clear",fg="RED",command=restart)
-  clearButton.grid(row=0,column=2,sticky=E)
+  clearButton=Button(root,text="Clear All",bg="WHITE",fg="RED",command=restart)
+  clearButton.configure(height=1,width=8)
+  clearButton.grid(row=1,column=3,sticky=SE)
 
   root.update()
   root.minsize(root.winfo_width()+10, root.winfo_height())
   root.maxsize(root.winfo_width()+10, root.winfo_height())
   root.mainloop()
+  photo=PhotoImage(file="oof.gif")
+  testlabel=Label(root, image=photo)
+  testlabel.grid(row=0,column=2)
 
 def restart():
   root.destroy()
