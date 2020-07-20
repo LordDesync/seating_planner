@@ -126,7 +126,6 @@ preferences["Jack J"]=("Finn","George S","Sam S R")
 preferences["Ralph"]=("","","")
 
 mutPair=[]
-["","","",12,12.5]
 #Adding people who prefer each other as tuples into a list, mutPair
 for pair in itertools.combinations(people,2):
   if pair[0] in preferences[pair[1]] and pair[1] in preferences[pair[0]]:
@@ -165,7 +164,18 @@ for x in mutPref:
     mutPref.remove(x)
     mutPref.append(splitHalf1(x))
     mutPref.append(splitHalf2(x))
+print(mutPref)
 
+#All the sad lonely people who didn't get paired up at the beginning
+#pepehands
+#https://xkcd.com/314/
+ungroupedPeople=list(people)
+for singledPerson in people:
+  if any(singledPerson in p for p in mutPref):
+    ungroupedPeople.remove(singledPerson)
+print(ungroupedPeople)
+for element in ungroupedPeople:
+  mutPref.append([element])
 #Bin packing by inspection;
 #=========================
 
@@ -265,11 +275,13 @@ while internalCopy!=[]:
       intermediary.append(compGroup+selectedOption)
       forbidden.append(compGroup)
       forbidden.append(selectedOption)
-    if weightedOptions==[]:
+    if weightedOptions==[] and len(singleGroupWithOptions[0])>2:
       finished.append(compGroup)
       forbidden.append(compGroup)
       print(compGroup)
       print("^ finished Group")
+    else:
+      intermediary.append(compGroup)
   print("\n \n \n \n \n")
   internalCopy=list(combineForSort(intermediary))
   internalCopy.sort(key=worthKey, reverse=True)
@@ -289,11 +301,7 @@ for index, setgroups in enumerate(mutPref):
 '''
 
 print("\n \n \n")
-#All the sad lonely people who didn't get paired up at the beginning
-#pepehands
-#https://xkcd.com/314/
-ungroupedPeople=list(people)
-for singledPerson in people:
-  if any(singledPerson in p for p in mutPref):
-    ungroupedPeople.remove(singledPerson)
-print(ungroupedPeople)
+
+for finishedTable in finished:
+  if len(finishedTable)<8:
+    print(finishedTable)
