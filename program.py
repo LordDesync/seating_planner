@@ -1,7 +1,8 @@
-import random;
 import itertools;
 from collections import defaultdict
 from tkinter import *
+import webbrowser
+webbrowser.open("README.txt")
 #Whole program is in a function to allow for a restart button.
 def start():
   global rowCounter
