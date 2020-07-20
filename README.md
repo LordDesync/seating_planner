@@ -21,11 +21,11 @@ Also have never used github before, so I've probably messed it up somehow.
 
 ## TROUBLESHOOTING
 
-| ERROR MESSAGE     	| METHOD                                                                                                                                                                                     	|   	|   	|   	|
-|-------------------	|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|---	|---	|---	|
-| INPUT ERROR       	| MAX SEATING PER TABLE MUST BE ENTERED IN ARABIC NUMERALS; 1,2,3...<br>DO NOT USE COMMAS OR PERIODS.                                                                                        	|   	|   	|   	|
-| TABLES MUST BE >2 	| PROGRAM ONLY SUPPORTS TABLES OF SIZE 3 OR GREATER<br>WORKAROUND: IF SMALLER TABLES ARE ABSOLUTELY REQUIRED, INPUT TWICE THE SIZE OF EACH TABLE, THEN SPLIT EACH TABLE.                     	|   	|   	|   	|
-| NOT ENOUGH DATA   	| THE NUMBER ENTERED AT THE TOP IS GREATER THAN THE NUMBER OF GUESTS.<br>PLEASE NOTE THAT THE NUMBER AT THE TOP IS THE MAXIMUM NUMBER OF GUESTS *PER TABLE*, AND NOT TOTAL NUMBER OF GUESTS. 	|   	|   	|   	|
+| ERROR MESSAGE     	| METHOD                                                                                                                                                                                     	|
+|-------------------	|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
+| INPUT ERROR       	| MAX SEATING PER TABLE MUST BE ENTERED IN ARABIC NUMERALS; 1,2,3...<br>DO NOT USE COMMAS OR PERIODS.                                                                                        	|
+| TABLES MUST BE >2 	| PROGRAM ONLY SUPPORTS TABLES OF SIZE 3 OR GREATER<br>WORKAROUND: IF SMALLER TABLES ARE ABSOLUTELY REQUIRED, INPUT TWICE THE SIZE OF EACH TABLE, THEN SPLIT EACH TABLE.                     	|
+| NOT ENOUGH DATA   	| THE NUMBER ENTERED AT THE TOP IS GREATER THAN THE NUMBER OF GUESTS.<br>PLEASE NOTE THAT THE NUMBER AT THE TOP IS THE MAXIMUM NUMBER OF GUESTS *PER TABLE*, AND NOT TOTAL NUMBER OF GUESTS. 	| 
 
 #KNOWN ̶I̶S̶S̶U̶E̶S *INTENDED FEATURES*
 
