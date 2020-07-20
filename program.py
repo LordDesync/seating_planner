@@ -35,9 +35,9 @@ def start():
   nameLabel.place(x=10,y=52)
   preferenceLabel.place(x=144,y=52)
   #implementing scrollbar for the entry field
-  outerFrame=Frame(root,width=505,height=200)
+  outerFrame=Frame(root,width=505,height=200,bg=backcolour)
   outerFrame.grid(row=3,column=0,columnspan=4)
-  canvas=Canvas(outerFrame)
+  canvas=Canvas(outerFrame,bg=backcolour)
   canvas.pack(side="left")
   scroll=Scrollbar(outerFrame,command=canvas.yview)
   scroll.pack(side="right",fill="y",padx=5)
@@ -374,24 +374,21 @@ def start():
       outputString.set(outputString.get()+"\n\n"+str(end))
 
     
-    outputFrame=Frame(root,width=505,height=200,bg="RED")
-    outputFrame.grid(row=4,column=0,columnspan=4,sticky=E,padx=10,pady=10)
-    outputCanvas=Canvas(outputFrame,height=30)
+    outputFrame=Frame(root,bg=backcolour,width=505,height=200,padx=10,pady=10)
+    outputFrame.grid(row=4,column=0,columnspan=4,sticky=W+E)
+    outputCanvas=Canvas(outputFrame,bg="WHITE",bd=0)
     outputCanvas.pack(side="left")
     outputScroll=Scrollbar(outputFrame,command=outputCanvas.yview)
-    outputScroll.pack(side="right",fill="y",padx=5)
+    outputScroll.pack(side="right",fill="y",padx=10)
     outputCanvas.configure(yscrollcommand=outputScroll.set)
-    messageFrame=Frame(outputCanvas,bg=backcolour)
-    messageFrame.pack()
+    messageFrame=Frame(outputCanvas)
+    messageFrame.pack(fill="x")
     outputCanvas.create_window((0,0),window=messageFrame,anchor="nw")
     def size2(event):
-      output.configure(scrollregion=canvas.bbox("all"),width=505,height=105)
+      outputCanvas.configure(scrollregion=outputCanvas.bbox("all"),width=485,height=200)
     messageFrame.bind("<Configure>",size2)
-
-
     
-    
-    output=Label(outputCanvas,bg="WHITE",textvariable=outputString,justify="left",relief="sunken",width=70,height=10)
+    output=Message(messageFrame,bg="WHITE",textvariable=outputString,justify="left",relief="flat")
     output.pack()
 #    output.grid(row=rowCounter+3,column=0,columnspan=4,pady=10,padx=10,sticky=W)
 
