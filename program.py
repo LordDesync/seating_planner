@@ -34,7 +34,7 @@ def start():
   preferenceLabel=Label(root,text="Preferences:",bg=backcolour)
   nameLabel.place(x=10,y=52)
   preferenceLabel.place(x=144,y=52)
-  #implementing scrollbar for the entry fields  
+  #implementing scrollbar for the entry field
   outerFrame=Frame(root,width=505,height=200)
   outerFrame.grid(row=3,column=0,columnspan=4)
   canvas=Canvas(outerFrame)
@@ -372,8 +372,33 @@ def start():
       if outputString.get()=="No Data Input":
         outputString.set("Tables:")
       outputString.set(outputString.get()+"\n\n"+str(end))
-    output=Message(root,bg="WHITE",width=490,textvariable=outputString,justify="left",relief="sunken")
-    output.grid(row=rowCounter+3,column=0,columnspan=4,pady=10,padx=10,sticky=W)
+
+    
+    outputFrame=Frame(root,width=505,height=200,bg="RED")
+    outputFrame.grid(row=4,column=0,columnspan=4,sticky=E,padx=10,pady=10)
+    outputCanvas=Canvas(outputFrame,height=30)
+    outputCanvas.pack(side="left")
+    outputScroll=Scrollbar(outputFrame,command=outputCanvas.yview)
+    outputScroll.pack(side="right",fill="y",padx=5)
+    outputCanvas.configure(yscrollcommand=outputScroll.set)
+    messageFrame=Frame(outputCanvas,bg=backcolour)
+    messageFrame.pack()
+    outputCanvas.create_window((0,0),window=messageFrame,anchor="nw")
+    def size2(event):
+      output.configure(scrollregion=canvas.bbox("all"),width=505,height=105)
+    messageFrame.bind("<Configure>",size2)
+
+
+    
+    
+    output=Label(outputCanvas,bg="WHITE",textvariable=outputString,justify="left",relief="sunken",width=70,height=10)
+    output.pack()
+#    output.grid(row=rowCounter+3,column=0,columnspan=4,pady=10,padx=10,sticky=W)
+
+
+
+
+    
     root.update()
     root.geometry("")
     root.minsize(root.winfo_width(), root.winfo_height())
@@ -398,11 +423,8 @@ def start():
     rowCounter=rowCounter+1
     nameList[-1].bind("<Key>", addRow)
     nameList[-2].unbind("<Key>")
-    root.geometry("")
     root.update()
-    root.minsize(root.winfo_width(), root.winfo_height())
     canvas.yview_moveto(1)
-#    root.maxsize(root.winfo_width(), root.winfo_height()+10)
   #Generating buttons.
   runButton=Button(root,text="Execute",bg="WHITE",fg="BLACK",command=execute)
   runButton.configure(height=1,width=8)
