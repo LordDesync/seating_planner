@@ -7,17 +7,17 @@ Also have never used github before, so I've probably messed it up somehow.
 
 ## Program Usage
 
-  ENTER:
-      MAXIMUM NUMBER OF GUESTS PER TABLE AT THE TOP.
-      NAME OF GUEST IN "NAMES" COLUMN.
-      EACH GUEST'S PREFERENCES (WHO THEY WOULD LIKE TO SIT WITH) IN THE "PREFERENCES" COLUMNS.
+Enter:<br>
+- Maximum number of guests per table at the top.<br>
+- Name of guests in "names" column.<br>
+- Each guest's preferences (who they would like to sit with, 3 maximum) in the "preferences" columns.<br>
 
-  "EXECUTE" TO GENERATE SEATING PLAN. MAY TAKE SOME TIME TO COMPLETE COMPUTATION.
-  "CLEAR ALL" DELETES *ALL* USER INPUT DATA. EXCERCISE SUITABLE CAUTION.
+- "Execute" to generate seating plan. May take some time to complete computation.<br>
+- "Clear All" deletes *ALL* user input data. Excercise suitable caution.
 
-  PLEASE DISTINGUISH BETWEEN GUESTS WITH IDENTICAL FIRST NAMES WHERE APPLICABLE; USE "JOE A" AND "JOE B".
-  ADDITIONALLY, ALL ENTRIES IN ANY COLUMN OR ROW ARE CASE SENSITIVE. TAKE CARE WHEN ENTERING DATA.
-  USING SPECIAL CHARACTERS (#,",```...) MAY POSSIBLY CAUSE UNDOCUMENTED BEHAVIOUR.
+Please distinguish between guests with identical first names where applicable; i.e.  use "Joe A" and "Joe B".<br>
+Additionally, all entries in any column or row are case sensitive. Take care when entering data.<br>
+Using special characters (#,",```,...) may possible cause undocumented behaviour.<br>
 
 ## TROUBLESHOOTING
 
