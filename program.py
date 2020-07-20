@@ -36,7 +36,7 @@ preferences["Joe D"]=("Teddy","Tom S","Jack I")
 preferences["Tom S"]=("Mackenzie","Tom S","Teddy")
 preferences["Mackenzie"]=("Teddy","Joe D","Tom S")
 preferences["Sam S R"]=("George South","Jacob E","Finn")
-preferences["Louis P"]=("Jacob E","Finn","Lewis W") ###BLANK
+preferences["Louis P"]=("Jacob E","Finn","Lewis W")
 preferences["Ben S"]=("George A","Archie P","[Bagi]")
 preferences["George A"]=("Reggie","Ed R","Benji")
 preferences["Archie P"]=("Harry J","Reggie","George A")
@@ -62,7 +62,7 @@ preferences["Harrison J"]=("Teddy","Alex D","Rob H")
 preferences["Joe R"]=("James G","Matthew O","Josh D")
 preferences["James G"]=("Matthew O","Maisie","Connie")
 preferences["Matthew O"]=("James G","Maisie","Connie")
-preferences["Josh D"]=("Joe R","James G","Matthew O")  ##BLANK
+preferences["Josh D"]=("Joe R","James G","Matthew O")
 preferences["George Sand"]=("Joe R","Matthew O","James G")
 preferences["Owen G"]=("Ed R","Reggie","Harry J")
 preferences["Ed R"]=("Reggie","George A","Archie P")
@@ -170,11 +170,9 @@ for x in mutPref:
 def bysize(words, size):
     return [word for word in words if len(word) == size]
 
-
-
 #Bin packing by inspection;
 
-#Listing possible other group placements for every group in mutual
+#Listing all possible other group placements for each group in mutPref
 fitOptions=[]
 for x in mutPref:
   c=0
@@ -188,11 +186,65 @@ for x in mutPref:
   fitNoNull=[n for n in fit if n]
   fitOptions.append(fitNoNull)
 #  print(str(fitNoNull)+"\n \n \n \n \n")
-for i,x in enumerate(mutPref,0):
-  print("Group "+str(x))
-  print(str(fitOptions[i]))
+#Calculating how happy people will be with each group pairing
+
+import copy
+
+worthTable=[]
+for fxgCount,fixedGroup in enumerate(mutPref):
+#  print("\n \n \nFixed Group: "+str(fixedGroup))
+  for matchGroup in fitOptions[fxgCount]:
+    worth=0
+#    print("Match Group: "+str(matchGroup))
+    for matchPerson in matchGroup:
+#      print("Match person: "+str(matchPerson))
+#      print(preferences[matchPerson])
+      if any(m in preferences[matchPerson] for m in fixedGroup):
+        worth=worth+1
+  
+    print("Matching group: "+str(fixedGroup))
+    print("with group: "+str(matchGroup))
+    print("Happiness parameter = "+str(worth))
+#  print("\n \n \n")
+
+
+
+#I want die
+
+
+      #We only need to check one side's preferences, because we know that people in fixedGroup only mutually like each other, and no-one else. The only time this wouldn't be true would be if fixedGroup and matchGroup were previously sliced from the same list for being too long, in which case, matchGroup would never be in fitOptions for fixedGroup.
+
+
+'''
+
+worthTable=copy.deepcopy(fitOptions)
+for i,grouped in enumerate(mutPref):
+  #grouped = one mutual-friend-group
+  worth=0
+  for person in grouped:
+    #person = someone in a mutual-friend-group
+      #fitOptions[i] returns a list of groups that can possibly be sat with the list "grouped"
+    for c,singleGroup in enumerate(fitOptions[i]):
+      #singleGroup is one group that can be sat with "grouped"
+      for optPerson in singleGroup:
+        if preferences[person] in singleGroup:
+          worth=worth+1
+        #optPerson is one person from singleGroup
+  for matchingGroup in worthTable[i]:
+    matchingGroup.insert(0,worth)
+#    if element in (item for sublist in fitOptions for item in sublist)
+  print("Group "+str(grouped))
+  print(str(worthTable[i])+"\n \n \n")
+
+'''
+
+
 
 #Testing compatibility between group options
+
+
+
+
 #Determining how happy people are with their table, with preferences as metric
 def tableWorth (friends, table):
   worth=0
