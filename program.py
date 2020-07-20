@@ -13,12 +13,13 @@ def start():
   global output
   #generating the root window in tkinter.
   root=Tk()
+  root.iconbitmap("lotus-icon.ico")
   backcolour="Azure"
   errorText=StringVar()
   errorText.set("")
   errorMessage=Label(root,textvariable=errorText,fg="RED",bg=backcolour)
   errorMessage.grid(row=1,column=1,sticky=NW)
-  root.geometry("530x200+1100+200")
+  root.geometry("530x200+200+200")
 #  root.geometry("515x200+200+200")
   root.grid_columnconfigure(0,uniform="foo")
   root.configure(bg=backcolour)
@@ -203,6 +204,7 @@ def start():
     mutPair=[]
     #Adding people who prefer each other as length-2 pairs into a list, mutPair.
     for pair in itertools.combinations(people,2):
+      print(pair)
       try:
         preferences[pair[1]]
       except:
@@ -211,7 +213,7 @@ def start():
       if pair[0] in preferences[pair[1]] and pair[1] in preferences[pair[0]]:
         mutPair.append(pair)
     adj_list = defaultdict(list)#
-    #Connecting all pairs which share common elements is equivalent to finding trees in a non-connected graph.
+    #Connecting all pairs which share common elements is equivalent to finding a set of trees that span all vertices of a non-connected graph.
     #Function for depth-first-search is implemented to this end.
     def dfs(adj_list, visited, vertex, result, key):
       visited.add(vertex)
@@ -364,7 +366,7 @@ def start():
           intermediary.append(compGroup)
       internalCopy=list(combineForSort(intermediary))
       internalCopy.sort(key=worthKey, reverse=True)
-    #Generating a box for the output.
+    #Generating a StringVar to output tables
     outputString=StringVar()
     outputString.set("No Data Input")
     for end in finished:
@@ -372,10 +374,11 @@ def start():
       if outputString.get()=="No Data Input":
         outputString.set("Tables:")
       outputString.set(outputString.get()+"\n\n"+str(end))
-
-    
-    outputFrame=Frame(root,bg=backcolour,width=505,height=200,padx=10,pady=10)
+    #Generating frames and scrollbars for output
+    outputFrame=Frame(root,bg=backcolour,pady=10)
     outputFrame.grid(row=4,column=0,columnspan=4,sticky=W+E)
+    spacer2=Frame(outputFrame, bg=backcolour,width=10)
+    spacer2.pack(side="left")
     outputCanvas=Canvas(outputFrame,bg="WHITE",bd=0)
     outputCanvas.pack(side="left")
     outputScroll=Scrollbar(outputFrame,command=outputCanvas.yview)
@@ -385,17 +388,10 @@ def start():
     messageFrame.pack(fill="x")
     outputCanvas.create_window((0,0),window=messageFrame,anchor="nw")
     def size2(event):
-      outputCanvas.configure(scrollregion=outputCanvas.bbox("all"),width=485,height=200)
+      outputCanvas.configure(scrollregion=outputCanvas.bbox("all"),width=493,height=200)
     messageFrame.bind("<Configure>",size2)
-    
-    output=Message(messageFrame,bg="WHITE",textvariable=outputString,justify="left",relief="flat")
+    output=Label(messageFrame,bg="WHITE",textvariable=outputString,justify="left",relief="flat",wraplength=480)
     output.pack()
-#    output.grid(row=rowCounter+3,column=0,columnspan=4,pady=10,padx=10,sticky=W)
-
-
-
-
-    
     root.update()
     root.geometry("")
     root.minsize(root.winfo_width(), root.winfo_height())
