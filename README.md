@@ -20,6 +20,7 @@ Also have never used github before, so I've probably messed it up somehow.
   USING SPECIAL CHARACTERS (#,",```...) MAY POSSIBLY CAUSE UNDOCUMENTED BEHAVIOUR.
 
 ## TROUBLESHOOTING
+"""
 			|
     ERROR MESSAGE	|  METHOD
   ______________________|______________________ _ _ _
@@ -36,7 +37,7 @@ Also have never used github before, so I've probably messed it up somehow.
     INVALID PREFERENCE	|  THERE IS A PREFERENCE WHICH IS NOT ADDED AS A GUEST; e.g;
 			|  GUEST A WANTS TO SIT WITH GUEST B, BUT GUEST B IS NOT ENTERED IN THE NAMES COLUMN
 			|
-
+"""
 #KNOWN ̶I̶S̶S̶U̶E̶S *INTENDED FEATURES*
 
   DUE TO THE INHERENT UNPREDICTABLE VARIATION OF INPUT, THE PROGRAM MAY OCCASIONALLY OUTPUT VERY SMALL TABLES.
