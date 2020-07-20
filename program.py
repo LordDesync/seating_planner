@@ -36,8 +36,8 @@ preferences["Joe D"]=("Teddy","Tom S","Jack I")
 preferences["Tom S"]=("Mackenzie","Tom S","Teddy")
 preferences["Mackenzie"]=("Teddy","Joe D","Tom S")
 preferences["Sam S R"]=("George South","Jacob E","Finn")
-preferences["Louis P"]=("Jacob E","Finn","Lewis W")
-preferences["Ben S"]=("George A","Archie P","[Bagi]")
+preferences["Louis P"]=("Jacob E","Finn","Lewis W") ###BLANK
+preferences["Ben S"]=("George A","Archie P","Phil")
 preferences["George A"]=("Reggie","Ed R","Benji")
 preferences["Archie P"]=("Harry J","Reggie","George A")
 preferences["Connie"]=("Maisie","Tabby","Libby")
@@ -70,7 +70,7 @@ preferences["Alex D"]=("Harrison J","Tom S","Teddy")
 preferences["Liv F"]=("Georgie R","Josie","Grace")
 preferences["Hannah B"]=("Alex H","Josie","Grace")
 preferences["Cole T S"]=("Petra","Joe A","Oli R")
-preferences["Kieran"]=("Alex S","Josh B","Matthew O")
+preferences["Kieran"]=("Alex S","Josh B","Matthew F")
 preferences["Archie C"]=("Liv F","Grace","Reggie")
 preferences["Jonny M"]=("Michael","Archie T","Josh D")
 preferences["Jacob N"]=("Tabby","Gibbo","Guy P")
@@ -116,7 +116,7 @@ preferences["Carys"]=("Emma G","Lauren W","Alex H")
 preferences["Jonno"]=("Will H","Jasmine R","Jaz")
 preferences["Jacob E"]=("Louis P","Sam S R","")
 preferences["Katie B"]=("Emily K","Georgie W","Rob H")
-preferences["Chris J"]=("","","")
+preferences["Chris J"]=("Callum P","Hamish","Cole T S")
 preferences["Andy"]=("","","")
 preferences["Rob H"]=("Hamish","Emelia R","Katie B")
 preferences["Martha"]=("","","")
@@ -126,7 +126,6 @@ preferences["Jack J"]=("Finn","George S","Sam S R")
 preferences["Ralph"]=("","","")
 
 mutPair=[]
-mutEight=[]
 
 #Adding people who prefer each other as tuples into a list, mutPair
 for pair in itertools.combinations(people,2):
@@ -166,56 +165,101 @@ for x in mutPref:
     mutPref.append(splitHalf1(x))
     mutPref.append(splitHalf2(x))
 
+#Bin packing by inspection;
+#=========================
+
 #Popping elements from list of a given size for later use in bin packing
 def bysize(words, size):
     return [word for word in words if len(word) == size]
 
-#Bin packing by inspection;
-
 #Listing all possible other group placements for each group in mutPref
 fitOptions=[]
-for x in mutPref:
+for aGroup in mutPref:
   c=0
-#  print("Group "+str(x))
   fit=[]
-  while c<(seatingMax-len(x)):
-    fit.extend(bysize(mutPref,seatingMax-(len(x)+c)))
+  while c<(seatingMax-len(aGroup)):
+    fit.extend(bysize(mutPref,seatingMax-(len(aGroup)+c)))
     c=c+1
-  if x in fit:
-    fit.remove(x)
+  if aGroup in fit:
+    fit.remove(aGroup)
+    #Stops group from being matched with itself
   fitNoNull=[n for n in fit if n]
   fitOptions.append(fitNoNull)
-#  print(str(fitNoNull)+"\n \n \n \n \n")
-#Calculating how happy people will be with each group pairing
 
-import copy
-
-worthTable=[]
-for fxgCount,fixedGroup in enumerate(mutPref):
-#  print("\n \n \nFixed Group: "+str(fixedGroup))
-  for matchGroup in fitOptions[fxgCount]:
-    worth=0
-#    print("Match Group: "+str(matchGroup))
-    for matchPerson in matchGroup:
-#      print("Match person: "+str(matchPerson))
-#      print(preferences[matchPerson])
-      if any(m in preferences[matchPerson] for m in fixedGroup):
-        worth=worth+1
-  
-    print("Matching group: "+str(fixedGroup))
-    print("with group: "+str(matchGroup))
-    print("Happiness parameter = "+str(worth))
-#  print("\n \n \n")
-
-
-
-#I want die
+#Function to determine compatibility between possible group pairings
+#Returned value, worthGroup, is a list containing lists of tuples of possible matches per table with element index 0 (of each tuple) being their relative compatibility. Groups with compatibility 0 are pruned. If a fixedGroup has no matching groups, an empty list is returned at its index.
+def detFit (setGroups, testGroups):
+  worthGroup=[]
+  for fxgCount,fixedGroup in enumerate(setGroups):
+    listTogether=[]
+    for matchGroup in testGroups[fxgCount]:
+      worth=0
+      for matchPerson in matchGroup:
+        if any(m in preferences[matchPerson] for m in fixedGroup):
+          worth=worth+1
+      for fixedPerson in fixedGroup:
+        if any(n in preferences[fixedPerson] for n in matchGroup):
+          worth=worth+1
+      goodMatch=[]
+      goodMatch.append([p for p in matchGroup])
+      goodMatch.insert(0,worth)
+      listTogether.append([q for q in goodMatch])
+    worthGroup.append([r for r in listTogether if r])
+  return worthGroup
+#print(detFit(mutPref, fitOptions))
 
 
-      #We only need to check one side's preferences, because we know that people in fixedGroup only mutually like each other, and no-one else. The only time this wouldn't be true would be if fixedGroup and matchGroup were previously sliced from the same list for being too long, in which case, matchGroup would never be in fitOptions for fixedGroup.
+#Have to combine the two lists together before sorting, then separate them again to keep the matching groups together during the sort.
+combinedMutualAndOptions=[]
+for counter,groupOptions in enumerate(detFit(mutPref, fitOptions)):
+  skippedVal=list(groupOptions)
+  skippedVal.insert(0,mutPref[counter])
+  combinedMutualAndOptions.append(skippedVal)
+#Outputs maximum worth value
+def worthKey(inputlist):
+  maximum=0
+  for counter,sublist in enumerate(inputlist):
+    if counter==0:
+      continue
+    if sublist[0]>maximum:
+      maximum=sublist[0]
+  return maximum
+
+combinedMutualAndOptions.sort(key=worthKey, reverse=True)
+for counter,singleMutualWithOptions in enumerate(combinedMutualAndOptions):
+  group1=singleMutualWithOptions[0]
+#  print(singleMutualWithOptions)
+#  print("\n")
+
 
 
 '''
+#Extracting the worth values to group
+for index, setgroups in enumerate(mutPref):
+#  for pop,possiblePair in enumerate(detFit(mutPref, fitOptions)[index]):
+  happiness=detFit(mutPref, fitOptions)[index]
+  print(happiness)
+#  print("\n")
+
+'''
+
+
+
+
+'''
+
+#All the sad lonely people who didn't get paired up at the beginning
+#pepehands
+#https://xkcd.com/314/
+ungroupedPeople=list(people)
+for singledPerson in people:
+  if any(singledPerson in p for p in mutPref):
+    ungroupedPeople.remove(singledPerson)
+print(ungroupedPeople)
+
+
+
+
 
 worthTable=copy.deepcopy(fitOptions)
 for i,grouped in enumerate(mutPref):
@@ -237,18 +281,3 @@ for i,grouped in enumerate(mutPref):
   print(str(worthTable[i])+"\n \n \n")
 
 '''
-
-
-
-#Testing compatibility between group options
-
-
-
-
-#Determining how happy people are with their table, with preferences as metric
-def tableWorth (friends, table):
-  worth=0
-  for person in table:
-    if preferences[person] in table:
-      worth = worth + 1
-  return worth
