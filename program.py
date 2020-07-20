@@ -1,307 +1,287 @@
 import random;
 import itertools;
 from collections import defaultdict
+from tkinter import *
 
-#Enter number of tables here:
-tableNum=15
-#Number of seats maximum at each table:
-seatingMax=10
-tables=[]
-k=0
-while k<tableNum:
-  tables.append([])
-  k=k+1
+def start():
+  global rowCounter
+  global preferences
+  global people
+  global root
+  root=Tk()
 
-class Person:
-  def __init__(self, pref1, pref2, pref3):
-    self.pref1=pref1
-    self.pref3=pref2
-    self.pref3=pref3
+  root.winfo_toplevel().title("Desync's Seating Planner")
 
-#Format: People=("Name 1", "Name 2","Name 3", ...)
-#N.B. Names must be exactly the same as the preferences below (case sensitive, spacing, etc.)
-people=("Venetia","Jasmine R","Will H","Jonno","Benji","Phil","Frederick B","Frederick E","Teddy","Joe D","Tom S","Mackenzie","Sam S R","Louis P","Jacob E","Ben S","George A","Archie P","Connie","Maisie","Tabby","Libby","Liliane","Katie B","Ann K T","Petra","Esia","Grace","Anna W","Emma G","Guy P","Jack I","Harry J","Reggie","Maya T","Rachel B","Amelia E","Harrison J","Joe R","James G","Matthew O","Josh D","George Sand","Owen G","Ed R","George South","Alex D","Liv F","Hannah B","Cole T S","Kieran","Archie C","Jonny M","Jacob N","Alex H","Josie","Veks","India O","Liv C","Matthew F","Amelia O","Frank","Jerry","Lauren W","Joe A","Oli R","Leon B","Melissa S","Callum P","Lewis W","Nemph","Evie","Georgie W","Hamish","Rob H","Michael","Archie T","Zara","Emily K","Ed L","Gibbo","Anton","Emelia R","Amy P","Thomas D","Alex S","Karan","Steph S","Andy","Angus","Georgie R","Chris J","Jaz","Calum N","Aydan","Martha","Mark","Carys","Jack J")
+  tableSizeLabel=Label(root,text="Max seats per table:")
+  tableSizeLabel.grid(row=0,column=0,sticky=E,pady=10)
+  tableSize=Entry(root)
+  tableSize.grid(row=0,column=1)
+  spacer=Label(root)
+  spacer.grid(row=1)
 
-#Format: preferences["Name"]=("Pref 1","Pref 2","Pref 3")
-preferences={}
-preferences["Venetia"]=("Jasmine R","Jonno","Will H")
-preferences["Jasmine R"]=("Amy P","Jonno","Katie B")
-preferences["Will H"]=("Jonno","Esia","Grace")
-preferences["Benji"]=("Phil","George A","Josie")
-preferences["Phil"]=("Benji","Archie P","Ben S")
-preferences["Frederick B"]=("Will M","Frederick B","Archie H")
-preferences["Frederick E"]=("Karan","Frank","Frederick B")
-preferences["Teddy"]=("Joe D","Mackenzie","Harrison J")
-preferences["Joe D"]=("Teddy","Tom S","Jack I")
-preferences["Tom S"]=("Mackenzie","Tom S","Teddy")
-preferences["Mackenzie"]=("Teddy","Joe D","Tom S")
-preferences["Sam S R"]=("George South","Jacob E","Finn")
-preferences["Louis P"]=("Jacob E","Finn","Lewis W") ###BLANK
-preferences["Ben S"]=("George A","Archie P","Phil")
-preferences["George A"]=("Reggie","Ed R","Benji")
-preferences["Archie P"]=("Harry J","Reggie","George A")
-preferences["Connie"]=("Maisie","Tabby","Libby")
-preferences["Maisie"]=("Libby","Connie","Tabby")
-preferences["Tabby"]=("Libby","Zara","Jacob N")
-preferences["Libby"]=("Connie","Tabby","Maisie")
-preferences["Liliane"]=("Katie B","Ann K T","BLANK")
-preferences["Ann K T"]=("Liliane","Katie B","Petra")
-preferences["Petra"]=("Cole T S","Darcy","Martha###")
-preferences["Esia"]=("Grace","Anna W","Emma G")
-preferences["Grace"]=("Liv F","Esia","Hannah B")
-preferences["Anna W"]=("Josie","Alex H","Hannah B")
-preferences["Emma G"]=("Alex H","Lauren W","Carys")
-preferences["Guy P"]=("Libby","Jacob N","Ed L]")
-preferences["Jack I"]=("Jonny M","Joe D","Jacob N")
-preferences["Harry J"]=("Ed R","Archie P","BLANK")
-preferences["Reggie"]=("Archie P","George A","Ed R")
-preferences["Maya T"]=("Rachel B","Amelia E","Abbie S")
-preferences["Rachel B"]=("Amelia E","Maya T","Abbie S")
-preferences["Amelia E"]=("Maya T","Leon B","Rachel B")
-preferences["Harrison J"]=("Teddy","Alex D","Rob H")
-preferences["Joe R"]=("James G","Matthew O","Josh D")
-preferences["James G"]=("Matthew O","Maisie","Connie")
-preferences["Matthew O"]=("James G","Maisie","Connie")
-preferences["Josh D"]=("Joe R","James G","Matthew O")
-preferences["George Sand"]=("Joe R","Matthew O","James G")
-preferences["Owen G"]=("Ed R","Reggie","Harry J")
-preferences["Ed R"]=("Reggie","George A","Archie P")
-preferences["Alex D"]=("Harrison J","Tom S","Teddy")
-preferences["Liv F"]=("Georgie R","Josie","Grace")
-preferences["Hannah B"]=("Alex H","Josie","Grace")
-preferences["Cole T S"]=("Petra","Joe A","Oli R")
-preferences["Kieran"]=("Alex S","Josh B","Matthew F")
-preferences["Archie C"]=("Liv F","Grace","Reggie")
-preferences["Jonny M"]=("Michael","Archie T","Josh D")
-preferences["Jacob N"]=("Tabby","Gibbo","Guy P")
-preferences["Alex H"]=("Lauren W","Hannah B","Emma G")
-preferences["Josie"]=("Lauren W","Hannah B","Alex H")
-preferences["Veks"]=("India O","Liv C","Matthew F")
-preferences["India O"]=("Veks","Liv C","Amelia O")
-preferences["Liv C"]=("Georgie W","Katie B","Amelia O")
-preferences["Matthew F"]=("Thomas D","Mark","Will H")
-preferences["Amelia O"]=("Emily K","India O"," Katie B")
-preferences["Frank"]=("Frederick E","Frederick B","Jerry")
-preferences["Jerry"]=("Frank","Aydan","Frederick E")
-preferences["Lauren W"]=("Josie","Liv F","Hannah B")
-preferences["Joe A"]=("Melissa S","Leon B","Oli R")
-preferences["Oli R"]=("Joe A","Leon B","Callum P")
-preferences["Leon B"]=("Amelia E","Joe A","Cole T S")
-preferences["Melissa S"]=("Darcy","Joe A","Callum P")
-preferences["Callum P"]=("Darcy","Cole T S","Melissa S")
-preferences["Lewis W"]=("Jacob E","Louis P","Sam S R")
-preferences["Nemph"]=("Evie","Georgie W","India Oli")
-preferences["Evie"]=("Nemph","India O","Chloe")
-preferences["Georgie W"]=("Emily K","Alex S","Katie B")
-preferences["Hamish"]=("Katie B","Rob H","Georgie W")
-preferences["Michael"]=("Josh D","Jonny M","Jacob N")
-preferences["Archie T"]=("Guy P","Gibbo","Ed L")
-preferences["Zara"]=("Gibbo","Tabby","Joe R")
-preferences["Emily K"]=("Georgie W","Amy P","Angus")
-preferences["Ed L"]=("Matthew O","Gibbo","Jacob N")
-preferences["Gibbo"]=("Zara","Ed L","Matthew O")
-preferences["Anton"]=("Frederick B","Frederick E","Karan")
-preferences["Emelia R"]=("Georgie W","Katie B","Rob H")
-preferences["Amy P"]=("Katie B","Emily K","Jasmine R")
-preferences["Thomas D"]=("Evie","Emily K","Matthew F")
-preferences["Alex S"]=("Aydan","Matthew F","Mark")
-preferences["Karan"]=("Anton","Frederick E","Frederick B")
-preferences["Steph S"]=("Abbie S","Chris J","Verity")
-preferences["Angus"]=("Matthew F","Alex S","Emily K")
-preferences["Georgie R"]=("Liv F","Louis P","Emma G")
-preferences["Jaz"]=("Libby","Zara","Tabby")
-preferences["Calum N"]=("Matthew O","James G","Joe R")
-preferences["Aydan"]=("Alex S","Matthew F","Will H")
-preferences["Carys"]=("Emma G","Lauren W","Alex H")
-preferences["Jonno"]=("Will H","Jasmine R","Jaz")
-preferences["Jacob E"]=("Louis P","Sam S R","")
-preferences["Katie B"]=("Emily K","Georgie W","Rob H")
-preferences["Chris J"]=("Callum P","Hamish","Cole T S")
-preferences["Andy"]=("","","")
-preferences["Rob H"]=("Hamish","Emelia R","Katie B")
-preferences["Martha"]=("","","")
-preferences["Mark"]=("Wil H","Matthew F","Alex S")
-preferences["George South"]=("","","")
-preferences["Jack J"]=("Finn","George S","Sam S R")
-preferences["Ralph"]=("","","")
+  nameLabel=Label(root,text="Name:")
+  preferenceLabel=Label(root,text="Preferences:")
 
-mutPair=[]
-#Adding people who prefer each other as tuples into a list, mutPair
-for pair in itertools.combinations(people,2):
-  if pair[0] in preferences[pair[1]] and pair[1] in preferences[pair[0]]:
-    mutPair.append(pair)
+  nameLabel.grid(row=2,sticky=W,padx=20)
+  preferenceLabel.grid(row=2,column=1,sticky=W)
 
-#Combining tuples which share a common element in to list mutPair
-#Combining tuples sharing elements is equivalent to finding connected trees in a graph
-def dfs(adj_list, visited, vertex, result, key):
-  visited.add(vertex)
-  result[key].append(vertex)
-  for neighbor in adj_list[vertex]:
-    if neighbor not in visited:
-      dfs(adj_list, visited, neighbor, result, key)
-adj_list = defaultdict(list)
-for x, y in mutPair:
-  adj_list[x].append(y)
-  adj_list[y].append(x)
-result = defaultdict(list)
-visited = set()
-for vertex in adj_list:
-  if vertex not in visited:
-    dfs(adj_list, visited, vertex, result, vertex)
-mutPref=list(result.values())
+  rowCounter=3
 
-#Splitting subgroups that are too large
-#Function has to be in 2 pieces, or the returned value is a tuple (causes issues with bin packing later)
-#Currently splits list in half, but can change to a random point later on to introduce a genetic element
-def splitHalf1(listIn):
-    half = len(listIn)//2
-    return listIn[:half]
-def splitHalf2(listIn):
-    half = len(listIn)//2
-    return listIn[half:]
-for x in mutPref:
-  if len(x)>10:
-    mutPref.remove(x)
-    mutPref.append(splitHalf1(x))
-    mutPref.append(splitHalf2(x))
-print(mutPref)
+  nameList=[]
+  pref1List=[]
+  pref2List=[]
+  pref3List=[]
 
-#All the sad lonely people who didn't get paired up at the beginning
-#pepehands
-#https://xkcd.com/314/
-ungroupedPeople=list(people)
-for singledPerson in people:
-  if any(singledPerson in p for p in mutPref):
-    ungroupedPeople.remove(singledPerson)
-print(ungroupedPeople)
-for element in ungroupedPeople:
-  mutPref.append([element])
-#Bin packing by inspection;
-#=========================
+  def clearFields():
+    global preferences
+    global people
+    global rowCounter
+    preferences.clear()
+    people.clear()
+    for row,nEntry in enumerate(nameList):
+      nEntry.delete(0,END)
+      pref1List[row].delete(0,END)
+      pref2List[row].delete(0,END)
+      pref3List[row].delete(0,END)
 
-#Popping elements from list of a given size for later use in bin packing
-def bysize(words, size):
-    return [word for word in words if len(word) == size]
+  rowCounter=2
+  for Row in range(5):
+    nameEntry=Entry(root)
+    nameEntry.grid(column=0,row=Row+3,padx=10,pady=1)
+    nameList.append(nameEntry)
+    pref1Entry=Entry(root)
+    pref1List.append(pref1Entry)
+    pref1Entry.grid(column=1,row=Row+3)
+    pref2Entry=Entry(root)
+    pref2List.append(pref2Entry)
+    pref2Entry.grid(column=2,row=Row+3)
+    pref3Entry=Entry(root)
+    pref3List.append(pref3Entry)
+    pref3Entry.grid(column=3,row=Row+3)
+    rowCounter+=1
 
-#Listing all possible other group placements for each group in mutPref
-def createOptionList(inputGroupList):
-  fitOptions=[]
-  for aGroup in inputGroupList:
-    c=0
-    fit=[]
-    while c<(seatingMax-len(aGroup)):
-      fit.extend(bysize(inputGroupList,seatingMax-(len(aGroup)+c)))
-      c=c+1
-    if aGroup in fit:
-      fit.remove(aGroup)
-    fitNoNull=[n for n in fit if n]
-    fitOptions.append(fitNoNull)
-  return fitOptions
+  people=[]
+  preferences={}
 
-#Function to determine compatibility between possible group pairings
-#Returned value, worthGroup, is a list containing lists of tuples of possible matches per table with element index 0 (of each tuple) being their relative compatibility. Groups with compatibility 0 are pruned. If a fixedGroup has no matching groups, an empty list is returned at its index.
-def detFit(setGroups, testGroups):
-  worthGroup=[]
-  for fxgCount,fixedGroup in enumerate(setGroups):
-    listTogether=[]
-    for matchGroup in testGroups[fxgCount]:
-      worth=0
-      for matchPerson in matchGroup:
-        if any(m in preferences[matchPerson] for m in fixedGroup):
-          worth=worth+1
-      for fixedPerson in fixedGroup:
-        if any(n in preferences[fixedPerson] for n in matchGroup):
-          worth=worth+1
-      goodMatch=[]
-      goodMatch.append([p for p in matchGroup])
-      goodMatch.insert(0,worth)
-      listTogether.append([q for q in goodMatch])
-    worthGroup.append([r for r in listTogether if r])
-  return worthGroup
 
-#Have to combine the two lists together to keep the matching groups together during the sort.
-def combineForSort(unsortedList):
-  groupWithOptionsWeighted=[]
-  for counter,groupOptions in enumerate(detFit(unsortedList, createOptionList(unsortedList))):
-    skippedVal=list(groupOptions)
-    skippedVal.insert(0,unsortedList[counter])
-    groupWithOptionsWeighted.append(skippedVal)
-  return groupWithOptionsWeighted
+  def dfs(adj_list, visited, vertex, result, key):
+    visited.add(vertex)
+    result[key].append(vertex)
+    for neighbor in adj_list[vertex]:
+      if neighbor not in visited:
+        dfs(adj_list, visited, neighbor, result, key)
+        
+  def splitHalf1(listIn):
+      half = len(listIn)//2
+      return listIn[:half]
+  def splitHalf2(listIn):
+      half = len(listIn)//2
+      return listIn[half:]
 
-#Outputs maximum worth value of a sublist
-#This is to assign higher priority to groups with higher worths first
-def worthKey(inputlist):
-  maximum=0
-  for counter,sublist in enumerate(inputlist):
-    if counter==0:
-      continue
-    if sublist[0]>maximum:
-      maximum=sublist[0]
-  return maximum
+  def bysize(words, size):
+      return [word for word in words if len(word) == size]
 
-# take second element for later sort
-def takeSecond(elem):
-  return elem[0]
+  def detFit(setGroups, testGroups):
+    worthGroup=[]
+    for fxgCount,fixedGroup in enumerate(setGroups):
+      listTogether=[]
+      for matchGroup in testGroups[fxgCount]:
+        worth=0
+        for matchPerson in matchGroup:
+          if any(m in preferences[matchPerson] for m in fixedGroup):
+            worth=worth+1
+        for fixedPerson in fixedGroup:
+          if any(n in preferences[fixedPerson] for n in matchGroup):
+            worth=worth+1
+        goodMatch=[]
+        goodMatch.append([p for p in matchGroup])
+        goodMatch.insert(0,worth)
+        listTogether.append([q for q in goodMatch])
+      worthGroup.append([r for r in listTogether if r])
+    return worthGroup
 
-combinedMutualAndOptions=list(combineForSort(mutPref))
-combinedMutualAndOptions.sort(key=worthKey, reverse=True)
 
-internalCopy=list(combinedMutualAndOptions)
-#print(internalCopy)
-#print("\n \n \n \n \n")
-finished=[]
-forbidden=[]
-while internalCopy!=[]:
-  intermediary=[]
-  for singleGroupWithOptions in internalCopy:
-    weightedOptions=list(singleGroupWithOptions)
-    compGroup=weightedOptions.pop(0)
-    weightedOptions.sort(key=takeSecond, reverse=True)
-    print("\n \n \n")
-    print(compGroup)
-    print("=============")
-    if compGroup in forbidden:
-      print("Forbidden")
-      continue
-    internal2=list(weightedOptions)
-    for counter,element in enumerate(weightedOptions):
-      print(element)
-      if element[1] in forbidden:
-        print("^ forbidden")
-        internal2.remove(element)
-    weightedOptions=list(internal2)
-    if weightedOptions!=[]:
-      selectedOption=weightedOptions[0][1]
-      intermediary.append(compGroup+selectedOption)
-      forbidden.append(compGroup)
-      forbidden.append(selectedOption)
-    if weightedOptions==[] and len(singleGroupWithOptions[0])>2:
-      finished.append(compGroup)
-      forbidden.append(compGroup)
-      print(compGroup)
-      print("^ finished Group")
-    else:
-      intermediary.append(compGroup)
-  print("\n \n \n \n \n")
-  internalCopy=list(combineForSort(intermediary))
-  internalCopy.sort(key=worthKey, reverse=True)
-print(finished)
+  def worthKey(inputlist):
+    maximum=0
+    for counter,sublist in enumerate(inputlist):
+      if counter==0:
+        continue
+      if sublist[0]>maximum:
+        maximum=sublist[0]
+    return maximum
 
-#print(detFit(mutPref, createOptionList(mutPref)))
-#print("\n \n \n \n \n")
-#print(combineForSort(mutPref))
+  def takeSecond(elem):
+    return elem[0]
 
-'''
-#Extracting the worth values to group
-for index, setgroups in enumerate(mutPref):
-#  for pop,possiblePair in enumerate(detFit(mutPref, fitOptions)[index]):
-  happiness=detFit(mutPref, fitOptions)[index]
-  print(happiness)
-#  print("\n")
-'''
+  def execute():
+    for rows,nEntry in enumerate(nameList):
+      if nEntry.get()!="":
+        if nEntry.get() not in people:
+          people.append(nEntry.get())
+        preferences[nEntry.get()]=(str(pref1List[rows].get()),str(pref2List[rows].get()),str(pref3List[rows].get()))
+        if pref1List[rows].get()=="" or pref2List[rows].get()=="" or pref3List[rows].get()=="":
+          errorMessage=Label(root,text="Empty Preference")
+          errorMessage.grid(row=1,column=1,sticky=NW)
+          raise
+    print(preferences)
+    print(people)
+    try:
+      int(tableSize.get())
+    except:
+      errorMessage=Label(root,text="Input Error")
+      errorMessage.grid(row=1,column=1,sticky=NW)
+      raise
+    seatingMax=int(tableSize.get())
+    if seatingMax<3:
+      errorMessage=Label(root,text="Tables must be >2")
+      errorMessage.grid(row=1,column=1,sticky=NW)
+      raise
+    def createOptionList(inputGroupList):
+      fitOptions=[]
+      for aGroup in inputGroupList:
+        c=0
+        fit=[]
+        while c<(seatingMax-len(aGroup)):
+          fit.extend(bysize(inputGroupList,seatingMax-(len(aGroup)+c)))
+          c=c+1
+        if aGroup in fit:
+          fit.remove(aGroup)
+        fitNoNull=[n for n in fit if n]
+        fitOptions.append(fitNoNull)
+      return fitOptions
+    
+    def combineForSort(unsortedList):
+      groupWithOptionsWeighted=[]
+      for counter,groupOptions in enumerate(detFit(unsortedList, createOptionList(unsortedList))):
+        skippedVal=list(groupOptions)
+        skippedVal.insert(0,unsortedList[counter])
+        groupWithOptionsWeighted.append(skippedVal)
+      return groupWithOptionsWeighted
+    mutPair=[]
+    #Adding people who prefer each other as tuples into a list, mutPair
+    for pair in itertools.combinations(people,2):
+      try:
+        preferences[pair[1]]
+      except:
+        errorMessage=Label(root,text="Invalid Preference")
+        errorMessage.grid(row=1,column=1,sticky=NW)
+      if pair[0] in preferences[pair[1]] and pair[1] in preferences[pair[0]]:
+        mutPair.append(pair)
+    adj_list = defaultdict(list)
+    for x, y in mutPair:
+      adj_list[x].append(y)
+      adj_list[y].append(x)
+    result = defaultdict(list)
+    visited = set()
+    for vertex in adj_list:
+      if vertex not in visited:
+        dfs(adj_list, visited, vertex, result, vertex)
+    mutPref=list(result.values())
+    for x in mutPref:
+      if len(x)>seatingMax:
+        mutPref.remove(x)
+        mutPref.append(splitHalf1(x))
+        mutPref.append(splitHalf2(x))
+    ungroupedPeople=list(people)
+    for singledPerson in people:
+      if any(singledPerson in p for p in mutPref):
+        ungroupedPeople.remove(singledPerson)
+    for element in ungroupedPeople:
+      mutPref.append([element])
+    combinedMutualAndOptions=list(combineForSort(mutPref))
+    combinedMutualAndOptions.sort(key=worthKey, reverse=True)
+    internalCopy=list(combinedMutualAndOptions)
+    finished=[]
+    forbidden=[]
+    while internalCopy!=[]:
+      intermediary=[]
+      timeout=0
+      for singleGroupWithOptions in internalCopy:
+        weightedOptions=list(singleGroupWithOptions)
+        compGroup=weightedOptions.pop(0)
+        weightedOptions.sort(key=takeSecond, reverse=True)
+  #      print("\n \n \n")
+  #      print(compGroup)
+  #      print("=============")
+        if compGroup in forbidden:
+  #        print("Forbidden")
+          continue
+        internal2=list(weightedOptions)
+        for counter,element in enumerate(weightedOptions):
+  #        print(element)
+          if element[1] in forbidden:
+  #          print("^ forbidden")
+            internal2.remove(element)
+        weightedOptions=list(internal2)
+        if weightedOptions!=[]:
+          selectedOption=weightedOptions[0][1]
+          intermediary.append(compGroup+selectedOption)
+          forbidden.append(compGroup)
+          forbidden.append(selectedOption)
+        if weightedOptions==[] and len(singleGroupWithOptions[0])>2:
+          finished.append(compGroup)
+          forbidden.append(compGroup)
+  #        print(compGroup)
+  #        print("^ finished Group")
+        else:
+          intermediary.append(compGroup)
+        timeout+=1
+        if timeout>100:
+          print("timed out")
+          raise
+      print("\n \n \n \n \n")
+      internalCopy=list(combineForSort(intermediary))
+      internalCopy.sort(key=worthKey, reverse=True)
+    print(finished)
+    print(rowCounter)
+    outputString="No Data Input"
+    for end in finished:
+      if outputString=="No Data Input":
+        outputString="Tables:"
+      outputString=outputString+"\n"+str(end)
+    output=Message(root,bg="WHITE",text=outputString,justify="left",relief="sunken",width=100)
+    output.grid(columnspan=4,row=rowCounter+3,column=0,pady=10,padx=10,sticky=W)
+    root.update()
+    root.minsize(root.winfo_width(), root.winfo_height()+60)
+    root.maxsize(root.winfo_width(), root.winfo_height()+60)
 
-print("\n \n \n")
+  def addRow(key):
+    global rowCounter
+    nameEntry=Entry(root)
+    nameEntry.grid(column=0,row=rowCounter+3)
+    nameList.append(nameEntry)
+    pref1Entry=Entry(root)
+    pref1List.append(pref1Entry)
+    pref1Entry.grid(column=1,row=rowCounter+3)
+    pref2Entry=Entry(root)
+    pref2List.append(pref2Entry)
+    pref2Entry.grid(column=2,row=rowCounter+3)
+    pref3Entry=Entry(root)
+    pref3List.append(pref3Entry)
+    pref3Entry.grid(column=3,row=rowCounter+3)
+    rowCounter=rowCounter+1
+    nameList[-1].bind("<Key>", addRow)
+    nameList[-2].unbind("<Key>")
+    print("addrow executed")
+    print(rowCounter)
+    root.update()
+    root.minsize(root.winfo_width(), root.winfo_height()+20)
+    root.maxsize(root.winfo_width(), root.winfo_height()+20)
 
-for finishedTable in finished:
-  if len(finishedTable)<8:
-    print(finishedTable)
+  runButton=Button(root,text="Execute",bg="WHITE",fg="BLACK",command=execute)
+  runButton.grid(row=0,column=3,sticky=E)
+
+
+  nameList[-1].bind("<Key>", addRow)
+  clearButton=Button(root,text="Clear",fg="RED",command=restart)
+  clearButton.grid(row=0,column=2,sticky=E)
+
+  root.update()
+  root.minsize(root.winfo_width()+10, root.winfo_height())
+  root.maxsize(root.winfo_width()+10, root.winfo_height())
+  root.mainloop()
+
+def restart():
+  root.destroy()
+  start()
+start()
