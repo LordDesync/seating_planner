@@ -2,31 +2,29 @@ import random;
 import itertools;
 from collections import defaultdict
 from tkinter import *
-
-
-#whole program is in a function to allow a restart button.
+#Whole program is in a function to allow for a restart button.
 def start():
   global rowCounter
   global preferences
   global people
   global root
   global output
-  #generating the root window in tkinter.
+  #Generating the root window in tkinter.
   root=Tk()
   root.iconbitmap("lotus-icon.ico")
   backcolour="Azure"
   errorText=StringVar()
   errorText.set("")
   errorMessage=Label(root,textvariable=errorText,fg="RED",bg=backcolour)
-  errorMessage.grid(row=1,column=1,sticky=NW)
+  errorMessage.place(x=144,y=28)
   root.geometry("530x200+200+200")
-#  root.geometry("515x200+200+200")
   root.grid_columnconfigure(0,uniform="foo")
   root.configure(bg=backcolour)
   root.winfo_toplevel().title("Desync's Seating Planner")
-  #generating labels for buttons.
+  #Generating labels for buttons.
+  #The buttons themselves are generated at the end, due to function dependancies.
   tableSizeLabel=Label(root,text="Max seats per table:", bg=backcolour)
-  tableSizeLabel.place(x=28,y=4)
+  tableSizeLabel.place(x=30,y=4)
   tableSize=Entry(root,width=10)
   tableSize.place(x=144,y=5)
   spacer=Label(root, bg=backcolour)
@@ -35,7 +33,7 @@ def start():
   preferenceLabel=Label(root,text="Preferences:",bg=backcolour)
   nameLabel.place(x=10,y=52)
   preferenceLabel.place(x=144,y=52)
-  #implementing scrollbar for the entry field
+  #Implementing scrollbar functionality for the entry field.
   outerFrame=Frame(root,width=505,height=200,bg=backcolour)
   outerFrame.grid(row=3,column=0,columnspan=4)
   canvas=Canvas(outerFrame,bg=backcolour)
@@ -49,12 +47,10 @@ def start():
   def size(event):
     canvas.configure(scrollregion=canvas.bbox("all"),width=505,height=105)
   entryFrame.bind("<Configure>",size)
-  
   nameList=[]
   pref1List=[]
   pref2List=[]
   pref3List=[]
-
   #Generating 5 initial rows of entries.
   #rowCounter is used later to add more rows.
   rowCounter=2
@@ -75,108 +71,7 @@ def start():
   #people is a list of guests.
   #preferences is a dictionary, keys are guests and values are their preferences.
   people=[]
-  people=["Venetia","Jasmine R","Will H","Jonno","Benji","Phil","Frederick B","Frederick E","Teddy","Joe D","Tom S","Mackenzie","Sam S R","Louis P","Jacob E","Ben S","George A","Archie P","Connie","Maisie","Tabby","Libby","Liliane","Katie B","Ann K T","Petra","Esia","Grace","Anna W","Emma G","Guy P","Jack I","Harry J","Reggie","Maya T","Rachel B","Amelia E","Harrison J","Joe R","James G","Matthew O","Josh D","George Sand","Owen G","Ed R","George South","Alex D","Liv F","Hannah B","Cole T S","Kieran","Archie C","Jonny M","Jacob N","Alex H","Josie","Veks","India O","Liv C","Matthew F","Amelia O","Frank","Jerry","Lauren W","Joe A","Oli R","Leon B","Melissa S","Callum P","Lewis W","Nemph","Evie","Georgie W","Hamish","Rob H","Michael","Archie T","Zara","Emily K","Ed L","Gibbo","Anton","Emelia R","Amy P","Thomas D","Alex S","Karan","Steph S","Andy","Angus","Georgie R","Chris J","Jaz","Calum N","Aydan","Martha","Mark","Carys","Jack J"]
   preferences={}
-  preferences["Venetia"]=("Jasmine R","Jonno","Will H")
-  preferences["Jasmine R"]=("Amy P","Jonno","Katie B")  ###Vegetarian
-  preferences["Will H"]=("Jonno","Esia","Grace")  ###Vegetarian
-  preferences["Benji"]=("Phil","George A","Josie")
-  preferences["Phil"]=("Benji","Archie P","Ben S")
-  preferences["Frederick B"]=("Will M","Frederick E","Archie H")
-  preferences["Frederick E"]=("Karan","Frank","Frederick B")
-  preferences["Teddy"]=("Joe D","Mackenzie","Harrison J")
-  preferences["Joe D"]=("Teddy","Tom S","Jack I")
-  preferences["Tom S"]=("Mackenzie","Tom S","Teddy")
-  preferences["Mackenzie"]=("Teddy","Joe D","Tom S")
-  preferences["Sam S R"]=("George South","Jacob E","Finn")
-  preferences["Louis P"]=("Jacob E","Finn","Lewis W") ###BLANK
-  preferences["Ben S"]=("George A","Archie P","Phil")
-  preferences["George A"]=("Reggie","Ed R","Benji")
-  preferences["Archie P"]=("Harry J","Reggie","George A")
-  preferences["Connie"]=("Maisie","Tabby","Libby")
-  preferences["Maisie"]=("Libby","Connie","Tabby")
-  preferences["Tabby"]=("Libby","Zara","Jacob N")
-  preferences["Libby"]=("Connie","Tabby","Maisie")
-  preferences["Liliane"]=("Katie B","Ann K T","BLANK")  ###Lactose Intolerant
-  preferences["Ann K T"]=("Liliane","Katie B","Petra")  ###Vegetarian
-  preferences["Petra"]=("Cole T S","Darcy","Martha###")  ###Vegetarian
-  preferences["Esia"]=("Grace","Anna W","Emma G")
-  preferences["Grace"]=("Liv F","Esia","Hannah B")
-  preferences["Anna W"]=("Josie","Alex H","Hannah B")
-  preferences["Emma G"]=("Alex H","Lauren W","Carys")
-  preferences["Guy P"]=("Libby","Jacob N","Ed L]")
-  preferences["Jack I"]=("Jonny M","Joe D","Jacob N")
-  preferences["Harry J"]=("Ed R","Archie P","BLANK")
-  preferences["Reggie"]=("Archie P","George A","Ed R")
-  preferences["Maya T"]=("Rachel B","Amelia E","Abbie S")
-  preferences["Rachel B"]=("Amelia E","Maya T","Abbie S")
-  preferences["Amelia E"]=("Maya T","Leon B","Rachel B")
-  preferences["Harrison J"]=("Teddy","Alex D","Rob H")
-  preferences["Joe R"]=("James G","Matthew O","Josh D")
-  preferences["James G"]=("Matthew O","Maisie","Connie")
-  preferences["Matthew O"]=("James G","Maisie","Connie")
-  preferences["Josh D"]=("Joe R","James G","Matthew O")  ##BLANK
-  preferences["George Sand"]=("Joe R","Matthew O","James G")
-  preferences["Owen G"]=("Ed R","Reggie","Harry J")
-  preferences["Ed R"]=("Reggie","George A","Archie P")
-  preferences["Alex D"]=("Harrison J","Tom S","Teddy")
-  preferences["Liv F"]=("Georgie R","Josie","Grace")
-  preferences["Hannah B"]=("Alex H","Josie","Grace")
-  preferences["Cole T S"]=("Petra","Joe A","Oli R")
-  preferences["Kieran"]=("Alex S","Josh B","Matthew F")
-  preferences["Archie C"]=("Liv F","Grace","Reggie")
-  preferences["Jonny M"]=("Michael","Archie T","Josh D")
-  preferences["Jacob N"]=("Tabby","Gibbo","Guy P")
-  preferences["Alex H"]=("Lauren W","Hannah B","Emma G")
-  preferences["Josie"]=("Lauren W","Hannah B","Alex H")
-  preferences["Veks"]=("India O","Liv C","Matthew F")
-  preferences["India O"]=("Veks","Liv C","Amelia O")
-  preferences["Liv C"]=("Georgie W","Katie B","Amelia O")
-  preferences["Matthew F"]=("Thomas D","Mark","Will H")
-  preferences["Amelia O"]=("Emily K","India O"," Katie B")
-  preferences["Frank"]=("Frederick E","Frederick B","Jerry")
-  preferences["Jerry"]=("Frank","Aydan","Frederick E")
-  preferences["Lauren W"]=("Josie","Liv F","Hannah B")
-  preferences["Joe A"]=("Melissa S","Leon B","Oli R")
-  preferences["Oli R"]=("Joe A","Leon B","Callum P")
-  preferences["Leon B"]=("Amelia E","Joe A","Cole T S")
-  preferences["Melissa S"]=("Darcy","Joe A","Callum P")
-  preferences["Callum P"]=("Darcy","Cole T S","Melissa S")
-  preferences["Lewis W"]=("Jacob E","Louis P","Sam S R")
-  preferences["Nemph"]=("Evie","Georgie W","India Oli")
-  preferences["Evie"]=("Nemph","India O","Chloe")
-  preferences["Georgie W"]=("Emily K","Alex S","Katie B")
-  preferences["Hamish"]=("Katie B","Rob H","Georgie W")
-  preferences["Michael"]=("Josh D","Jonny M","Jacob N")
-  preferences["Archie T"]=("Guy P","Gibbo","Ed L")
-  preferences["Zara"]=("Gibbo","Tabby","Joe R")
-  preferences["Emily K"]=("Georgie W","Amy P","Angus")
-  preferences["Ed L"]=("Matthew O","Gibbo","Jacob N")
-  preferences["Gibbo"]=("Zara","Ed L","Matthew O")
-  preferences["Anton"]=("Frederick B","Frederick E","Karan")
-  preferences["Emelia R"]=("Georgie W","Katie B","Rob H")
-  preferences["Amy P"]=("Katie B","Emily K","Jasmine R")
-  preferences["Thomas D"]=("Evie","Emily K","Matthew F")
-  preferences["Alex S"]=("Aydan","Matthew F","Mark")
-  preferences["Karan"]=("Anton","Frederick E","Frederick B")
-  preferences["Steph S"]=("Abbie S","Chris J","Verity")  ###Vegan
-  preferences["Angus"]=("Matthew F","Alex S","Emily K")
-  preferences["Georgie R"]=("Liv F","Louis P","Emma G")
-  preferences["Jaz"]=("Libby","Zara","Tabby")
-  preferences["Calum N"]=("Matthew O","James G","Joe R")
-  preferences["Aydan"]=("Alex S","Matthew F","Will H")
-  preferences["Carys"]=("Emma G","Lauren W","Alex H")
-  preferences["Jonno"]=("Will H","Jasmine R","Jaz")  ###Vegetarian
-  preferences["Jacob E"]=("Louis P","Sam S R","")
-  preferences["Katie B"]=("Emily K","Georgie W","Rob H")  ###Vegan
-  preferences["Chris J"]=("Callum P","Hamish","Cole T S")
-  preferences["Andy"]=("","","")
-  preferences["Rob H"]=("Hamish","Emelia R","Katie B")
-  preferences["Martha"]=("","","")
-  preferences["Mark"]=("Wil H","Matthew F","Alex S")
-  preferences["George South"]=("","","")
-  preferences["Jack J"]=("Finn","George S","Sam S R")
-  preferences["Ralph"]=("","","")
   def execute():
     for rows,nEntry in enumerate(nameList):
       if nEntry.get()!="":
@@ -184,10 +79,6 @@ def start():
           people.append(nEntry.get())
         preferences[nEntry.get()]=(str(pref1List[rows].get()),str(pref2List[rows].get()),str(pref3List[rows].get()))
         #Ensuring all guests have 3 preferences as to not skew weightings.
-        #if pref1List[rows].get()=="" or pref2List[rows].get()=="" or pref3List[rows].get()=="":
-        #  errorText.set("Empty Preference")
-        #  errorMessage.update()
-        #  raise
     #Assorted error checks.
     try:
       int(tableSize.get())
@@ -204,7 +95,6 @@ def start():
     mutPair=[]
     #Adding people who prefer each other as length-2 pairs into a list, mutPair.
     for pair in itertools.combinations(people,2):
-      print(pair)
       try:
         preferences[pair[1]]
       except:
@@ -213,7 +103,7 @@ def start():
       if pair[0] in preferences[pair[1]] and pair[1] in preferences[pair[0]]:
         mutPair.append(pair)
     adj_list = defaultdict(list)#
-    #Connecting all pairs which share common elements is equivalent to finding a set of trees that span all vertices of a non-connected graph.
+    #Connecting all pairs which share common elements is equivalent to finding trees in a non-connected graph.
     #Function for depth-first-search is implemented to this end.
     def dfs(adj_list, visited, vertex, result, key):
       visited.add(vertex)
@@ -242,8 +132,8 @@ def start():
       return listIn[half:]
     #We must have another function to repeat the splitting, as, for example:
     #If we had a max seating size of 3, and had a group of size 8,
-    #Two groups of size 4 would be returned. This next function would then repeat
-    #Splitting into 4 groups of size 2.
+    #Two groups of size 4 would be returned. This next function would then repeat,
+    #Splitting into 4 groups of size 2, thus fixing the issue.
     def fullSplit(listIn):
       while any(len(x)>seatingMax for x in listIn):
         for x in listIn:
@@ -318,7 +208,7 @@ def start():
         if sublist[0]>maximum:
           maximum=sublist[0]
       return maximum
-    #Due to the structure of mutPref, the worth, which we wish to sort by, is two layers deep in a list
+    #Due to the structure of mutPref, the worth, which we wish to sort by, is two layers deep in a list.
     #This function returns it to help with sorting.
     def takeSecond(elem):
       return elem[0]
@@ -333,7 +223,7 @@ def start():
       intermediary=[]
       for singleGroupWithOptions in internalCopy:
         weightedOptions=list(singleGroupWithOptions)
-        #Combining the selected group with its most optimal partner and pushing it to a temporary list, internal2
+        #Combining the selected group with its most optimal partner and pushing it to a temporary list, internal2.
         #We loop this section repeatedly, until no more combinations are available.
         compGroup=weightedOptions.pop(0)
         weightedOptions.sort(key=takeSecond, reverse=True)
@@ -366,7 +256,7 @@ def start():
           intermediary.append(compGroup)
       internalCopy=list(combineForSort(intermediary))
       internalCopy.sort(key=worthKey, reverse=True)
-    #Generating a StringVar to output tables
+    #Generating a StringVar to output tables.
     outputString=StringVar()
     outputString.set("No Data Input")
     for end in finished:
@@ -374,7 +264,7 @@ def start():
       if outputString.get()=="No Data Input":
         outputString.set("Tables:")
       outputString.set(outputString.get()+"\n\n"+str(end))
-    #Generating frames and scrollbars for output
+    #Generating frames and scrollbars for output.
     outputFrame=Frame(root,bg=backcolour,pady=10)
     outputFrame.grid(row=4,column=0,columnspan=4,sticky=W+E)
     spacer2=Frame(outputFrame, bg=backcolour,width=10)
@@ -395,7 +285,7 @@ def start():
     root.update()
     root.geometry("")
     root.minsize(root.winfo_width(), root.winfo_height())
-  #Function to add more rows when the user types into the bottom row.
+  #Function to add more rows when the user presses a key when focussed on the bottom name entry.
   def addRow(key):
     global rowCounter
     for widget in root.winfo_children():
@@ -418,7 +308,7 @@ def start():
     nameList[-2].unbind("<Key>")
     root.update()
     canvas.yview_moveto(1)
-  #Generating buttons.
+  #Generating various buttons.
   runButton=Button(root,text="Execute",bg="WHITE",fg="BLACK",command=execute)
   runButton.configure(height=1,width=8)
   runButton.grid(row=0,column=3,sticky=E,pady=1)
@@ -429,7 +319,6 @@ def start():
   root.geometry("")
   root.update()
   root.minsize(root.winfo_width()+10, root.winfo_height()+10)
-#  root.maxsize(root.winfo_width()+10, root.winfo_height())
   root.mainloop()
 #Function for the restart button
 def restart():
