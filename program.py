@@ -18,24 +18,37 @@ def start():
   errorText.set("")
   errorMessage=Label(root,textvariable=errorText,fg="RED",bg=backcolour)
   errorMessage.grid(row=1,column=1,sticky=NW)
-  root.geometry("515x200+200+200")
+  root.geometry("530x200+1100+200")
+#  root.geometry("515x200+200+200")
   root.grid_columnconfigure(0,uniform="foo")
   root.configure(bg=backcolour)
   root.winfo_toplevel().title("Desync's Seating Planner")
   #generating labels for buttons.
   tableSizeLabel=Label(root,text="Max seats per table:", bg=backcolour)
-  tableSizeLabel.grid(row=0,column=0,sticky=E,pady=10)
-  tableSize=Entry(root)
-  tableSize.grid(row=0,column=1)
+  tableSizeLabel.place(x=28,y=4)
+  tableSize=Entry(root,width=10)
+  tableSize.place(x=144,y=5)
   spacer=Label(root, bg=backcolour)
-  spacer.grid(row=1)
+  spacer.grid(row=2)
   nameLabel=Label(root,text="Name:",bg=backcolour)
   preferenceLabel=Label(root,text="Preferences:",bg=backcolour)
-  nameLabel.grid(row=2,sticky=W,padx=20)
-  preferenceLabel.grid(row=2,column=1,sticky=W)
-
-  rowCounter=3
-
+  nameLabel.place(x=10,y=52)
+  preferenceLabel.place(x=144,y=52)
+  #implementing scrollbar for the entry fields  
+  outerFrame=Frame(root,width=505,height=200)
+  outerFrame.grid(row=3,column=0,columnspan=4)
+  canvas=Canvas(outerFrame)
+  canvas.pack(side="left")
+  scroll=Scrollbar(outerFrame,command=canvas.yview)
+  scroll.pack(side="right",fill="y",padx=5)
+  canvas.configure(yscrollcommand=scroll.set)
+  entryFrame=Frame(canvas,bg=backcolour)
+  entryFrame.grid(row=0,column=0,columnspan=4)
+  canvas.create_window((0,0),window=entryFrame,anchor="nw")
+  def size(event):
+    canvas.configure(scrollregion=canvas.bbox("all"),width=505,height=105)
+  entryFrame.bind("<Configure>",size)
+  
   nameList=[]
   pref1List=[]
   pref2List=[]
@@ -45,16 +58,16 @@ def start():
   #rowCounter is used later to add more rows.
   rowCounter=2
   for Row in range(5):
-    nameEntry=Entry(root)
+    nameEntry=Entry(entryFrame)
     nameEntry.grid(column=0,row=Row+3,padx=10,pady=1)
     nameList.append(nameEntry)
-    pref1Entry=Entry(root)
+    pref1Entry=Entry(entryFrame)
     pref1List.append(pref1Entry)
     pref1Entry.grid(column=1,row=Row+3)
-    pref2Entry=Entry(root)
+    pref2Entry=Entry(entryFrame)
     pref2List.append(pref2Entry)
     pref2Entry.grid(column=2,row=Row+3)
-    pref3Entry=Entry(root)
+    pref3Entry=Entry(entryFrame)
     pref3List.append(pref3Entry)
     pref3Entry.grid(column=3,row=Row+3)
     rowCounter+=1
@@ -175,7 +188,6 @@ def start():
         #  errorMessage.update()
         #  raise
     #Assorted error checks.
-    print("boop")
     try:
       int(tableSize.get())
     except:
@@ -218,17 +230,27 @@ def start():
     mutPref=list(result.values())
     #Splitting subgroups that are too large for a table.
     #Function has to be in two pieces, or the returned value is a tuple.
+    #Additionally, we prefer to use a splitting approach due to how the groups are formed:
+    #If we were to split groups by chunks, we could potentially produce groups of size 1
     def splitHalf1(listIn):
-        half = len(listIn)//2
-        return listIn[:half]
+      half = len(listIn)//2
+      return listIn[:half]
     def splitHalf2(listIn):
-        half = len(listIn)//2
-        return listIn[half:]
-    for x in mutPref:
-      if len(x)>seatingMax:
-        mutPref.remove(x)
-        mutPref.append(splitHalf1(x))
-        mutPref.append(splitHalf2(x))
+      half = len(listIn)//2
+      return listIn[half:]
+    #We must have another function to repeat the splitting, as, for example:
+    #If we had a max seating size of 3, and had a group of size 8,
+    #Two groups of size 4 would be returned. This next function would then repeat
+    #Splitting into 4 groups of size 2.
+    def fullSplit(listIn):
+      while any(len(x)>seatingMax for x in listIn):
+        for x in listIn:
+          listIn.remove(x)
+          listIn.append(splitHalf1(x))
+          listIn.append(splitHalf2(x))
+          break
+      return listIn
+    mutPref=fullSplit(mutPref)
     ungroupedPeople=list(people)
     #Finding all the people who didn't get put into mutPair at the beginning.
     for singledPerson in people:
@@ -301,9 +323,9 @@ def start():
     combinedMutualAndOptions=list(combineForSort(mutPref))
     combinedMutualAndOptions.sort(key=worthKey, reverse=True)
     internalCopy=list(combinedMutualAndOptions)
+
     finished=[]
     forbidden=[]
-    print("bop")
     timeout=0
     while internalCopy!=[]:
       intermediary=[]
@@ -361,16 +383,16 @@ def start():
     for widget in root.winfo_children():
       if isinstance(widget,Message):
         widget.destroy()
-    nameEntry=Entry(root)
+    nameEntry=Entry(entryFrame)
     nameEntry.grid(column=0,row=rowCounter+3,pady=1)
     nameList.append(nameEntry)
-    pref1Entry=Entry(root)
+    pref1Entry=Entry(entryFrame)
     pref1List.append(pref1Entry)
     pref1Entry.grid(column=1,row=rowCounter+3)
-    pref2Entry=Entry(root)
+    pref2Entry=Entry(entryFrame)
     pref2List.append(pref2Entry)
     pref2Entry.grid(column=2,row=rowCounter+3)
-    pref3Entry=Entry(root)
+    pref3Entry=Entry(entryFrame)
     pref3List.append(pref3Entry)
     pref3Entry.grid(column=3,row=rowCounter+3)
     rowCounter=rowCounter+1
@@ -378,18 +400,20 @@ def start():
     nameList[-2].unbind("<Key>")
     root.geometry("")
     root.update()
-    root.minsize(root.winfo_width(), root.winfo_height()+10)
+    root.minsize(root.winfo_width(), root.winfo_height())
+    canvas.yview_moveto(1)
 #    root.maxsize(root.winfo_width(), root.winfo_height()+10)
   #Generating buttons.
   runButton=Button(root,text="Execute",bg="WHITE",fg="BLACK",command=execute)
   runButton.configure(height=1,width=8)
-  runButton.grid(row=0,column=3,sticky=E)
+  runButton.grid(row=0,column=3,sticky=E,pady=1)
   nameList[-1].bind("<Key>", addRow)
   clearButton=Button(root,text="Clear All",bg="WHITE",fg="RED",command=restart)
   clearButton.configure(height=1,width=8)
   clearButton.grid(row=1,column=3,sticky=SE)
+  root.geometry("")
   root.update()
-  root.minsize(root.winfo_width()+10, root.winfo_height())
+  root.minsize(root.winfo_width()+10, root.winfo_height()+10)
 #  root.maxsize(root.winfo_width()+10, root.winfo_height())
   root.mainloop()
 #Function for the restart button
