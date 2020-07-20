@@ -10,6 +10,7 @@ def start():
   global preferences
   global people
   global root
+  global output
   #generating the root window in tkinter.
   root=Tk()
   backcolour="Azure"
@@ -17,7 +18,8 @@ def start():
   errorText.set("")
   errorMessage=Label(root,textvariable=errorText,fg="RED",bg=backcolour)
   errorMessage.grid(row=1,column=1,sticky=NW)
-  root.geometry("515x200")
+  root.geometry("515x200+200+200")
+  root.grid_columnconfigure(0,uniform="foo")
   root.configure(bg=backcolour)
   root.winfo_toplevel().title("Desync's Seating Planner")
   #generating labels for buttons.
@@ -59,7 +61,108 @@ def start():
   #people is a list of guests.
   #preferences is a dictionary, keys are guests and values are their preferences.
   people=[]
+  people=["Venetia","Jasmine R","Will H","Jonno","Benji","Phil","Frederick B","Frederick E","Teddy","Joe D","Tom S","Mackenzie","Sam S R","Louis P","Jacob E","Ben S","George A","Archie P","Connie","Maisie","Tabby","Libby","Liliane","Katie B","Ann K T","Petra","Esia","Grace","Anna W","Emma G","Guy P","Jack I","Harry J","Reggie","Maya T","Rachel B","Amelia E","Harrison J","Joe R","James G","Matthew O","Josh D","George Sand","Owen G","Ed R","George South","Alex D","Liv F","Hannah B","Cole T S","Kieran","Archie C","Jonny M","Jacob N","Alex H","Josie","Veks","India O","Liv C","Matthew F","Amelia O","Frank","Jerry","Lauren W","Joe A","Oli R","Leon B","Melissa S","Callum P","Lewis W","Nemph","Evie","Georgie W","Hamish","Rob H","Michael","Archie T","Zara","Emily K","Ed L","Gibbo","Anton","Emelia R","Amy P","Thomas D","Alex S","Karan","Steph S","Andy","Angus","Georgie R","Chris J","Jaz","Calum N","Aydan","Martha","Mark","Carys","Jack J"]
   preferences={}
+  preferences["Venetia"]=("Jasmine R","Jonno","Will H")
+  preferences["Jasmine R"]=("Amy P","Jonno","Katie B")  ###Vegetarian
+  preferences["Will H"]=("Jonno","Esia","Grace")  ###Vegetarian
+  preferences["Benji"]=("Phil","George A","Josie")
+  preferences["Phil"]=("Benji","Archie P","Ben S")
+  preferences["Frederick B"]=("Will M","Frederick E","Archie H")
+  preferences["Frederick E"]=("Karan","Frank","Frederick B")
+  preferences["Teddy"]=("Joe D","Mackenzie","Harrison J")
+  preferences["Joe D"]=("Teddy","Tom S","Jack I")
+  preferences["Tom S"]=("Mackenzie","Tom S","Teddy")
+  preferences["Mackenzie"]=("Teddy","Joe D","Tom S")
+  preferences["Sam S R"]=("George South","Jacob E","Finn")
+  preferences["Louis P"]=("Jacob E","Finn","Lewis W") ###BLANK
+  preferences["Ben S"]=("George A","Archie P","Phil")
+  preferences["George A"]=("Reggie","Ed R","Benji")
+  preferences["Archie P"]=("Harry J","Reggie","George A")
+  preferences["Connie"]=("Maisie","Tabby","Libby")
+  preferences["Maisie"]=("Libby","Connie","Tabby")
+  preferences["Tabby"]=("Libby","Zara","Jacob N")
+  preferences["Libby"]=("Connie","Tabby","Maisie")
+  preferences["Liliane"]=("Katie B","Ann K T","BLANK")  ###Lactose Intolerant
+  preferences["Ann K T"]=("Liliane","Katie B","Petra")  ###Vegetarian
+  preferences["Petra"]=("Cole T S","Darcy","Martha###")  ###Vegetarian
+  preferences["Esia"]=("Grace","Anna W","Emma G")
+  preferences["Grace"]=("Liv F","Esia","Hannah B")
+  preferences["Anna W"]=("Josie","Alex H","Hannah B")
+  preferences["Emma G"]=("Alex H","Lauren W","Carys")
+  preferences["Guy P"]=("Libby","Jacob N","Ed L]")
+  preferences["Jack I"]=("Jonny M","Joe D","Jacob N")
+  preferences["Harry J"]=("Ed R","Archie P","BLANK")
+  preferences["Reggie"]=("Archie P","George A","Ed R")
+  preferences["Maya T"]=("Rachel B","Amelia E","Abbie S")
+  preferences["Rachel B"]=("Amelia E","Maya T","Abbie S")
+  preferences["Amelia E"]=("Maya T","Leon B","Rachel B")
+  preferences["Harrison J"]=("Teddy","Alex D","Rob H")
+  preferences["Joe R"]=("James G","Matthew O","Josh D")
+  preferences["James G"]=("Matthew O","Maisie","Connie")
+  preferences["Matthew O"]=("James G","Maisie","Connie")
+  preferences["Josh D"]=("Joe R","James G","Matthew O")  ##BLANK
+  preferences["George Sand"]=("Joe R","Matthew O","James G")
+  preferences["Owen G"]=("Ed R","Reggie","Harry J")
+  preferences["Ed R"]=("Reggie","George A","Archie P")
+  preferences["Alex D"]=("Harrison J","Tom S","Teddy")
+  preferences["Liv F"]=("Georgie R","Josie","Grace")
+  preferences["Hannah B"]=("Alex H","Josie","Grace")
+  preferences["Cole T S"]=("Petra","Joe A","Oli R")
+  preferences["Kieran"]=("Alex S","Josh B","Matthew F")
+  preferences["Archie C"]=("Liv F","Grace","Reggie")
+  preferences["Jonny M"]=("Michael","Archie T","Josh D")
+  preferences["Jacob N"]=("Tabby","Gibbo","Guy P")
+  preferences["Alex H"]=("Lauren W","Hannah B","Emma G")
+  preferences["Josie"]=("Lauren W","Hannah B","Alex H")
+  preferences["Veks"]=("India O","Liv C","Matthew F")
+  preferences["India O"]=("Veks","Liv C","Amelia O")
+  preferences["Liv C"]=("Georgie W","Katie B","Amelia O")
+  preferences["Matthew F"]=("Thomas D","Mark","Will H")
+  preferences["Amelia O"]=("Emily K","India O"," Katie B")
+  preferences["Frank"]=("Frederick E","Frederick B","Jerry")
+  preferences["Jerry"]=("Frank","Aydan","Frederick E")
+  preferences["Lauren W"]=("Josie","Liv F","Hannah B")
+  preferences["Joe A"]=("Melissa S","Leon B","Oli R")
+  preferences["Oli R"]=("Joe A","Leon B","Callum P")
+  preferences["Leon B"]=("Amelia E","Joe A","Cole T S")
+  preferences["Melissa S"]=("Darcy","Joe A","Callum P")
+  preferences["Callum P"]=("Darcy","Cole T S","Melissa S")
+  preferences["Lewis W"]=("Jacob E","Louis P","Sam S R")
+  preferences["Nemph"]=("Evie","Georgie W","India Oli")
+  preferences["Evie"]=("Nemph","India O","Chloe")
+  preferences["Georgie W"]=("Emily K","Alex S","Katie B")
+  preferences["Hamish"]=("Katie B","Rob H","Georgie W")
+  preferences["Michael"]=("Josh D","Jonny M","Jacob N")
+  preferences["Archie T"]=("Guy P","Gibbo","Ed L")
+  preferences["Zara"]=("Gibbo","Tabby","Joe R")
+  preferences["Emily K"]=("Georgie W","Amy P","Angus")
+  preferences["Ed L"]=("Matthew O","Gibbo","Jacob N")
+  preferences["Gibbo"]=("Zara","Ed L","Matthew O")
+  preferences["Anton"]=("Frederick B","Frederick E","Karan")
+  preferences["Emelia R"]=("Georgie W","Katie B","Rob H")
+  preferences["Amy P"]=("Katie B","Emily K","Jasmine R")
+  preferences["Thomas D"]=("Evie","Emily K","Matthew F")
+  preferences["Alex S"]=("Aydan","Matthew F","Mark")
+  preferences["Karan"]=("Anton","Frederick E","Frederick B")
+  preferences["Steph S"]=("Abbie S","Chris J","Verity")  ###Vegan
+  preferences["Angus"]=("Matthew F","Alex S","Emily K")
+  preferences["Georgie R"]=("Liv F","Louis P","Emma G")
+  preferences["Jaz"]=("Libby","Zara","Tabby")
+  preferences["Calum N"]=("Matthew O","James G","Joe R")
+  preferences["Aydan"]=("Alex S","Matthew F","Will H")
+  preferences["Carys"]=("Emma G","Lauren W","Alex H")
+  preferences["Jonno"]=("Will H","Jasmine R","Jaz")  ###Vegetarian
+  preferences["Jacob E"]=("Louis P","Sam S R","")
+  preferences["Katie B"]=("Emily K","Georgie W","Rob H")  ###Vegan
+  preferences["Chris J"]=("Callum P","Hamish","Cole T S")
+  preferences["Andy"]=("","","")
+  preferences["Rob H"]=("Hamish","Emelia R","Katie B")
+  preferences["Martha"]=("","","")
+  preferences["Mark"]=("Wil H","Matthew F","Alex S")
+  preferences["George South"]=("","","")
+  preferences["Jack J"]=("Finn","George S","Sam S R")
+  preferences["Ralph"]=("","","")
   def execute():
     for rows,nEntry in enumerate(nameList):
       if nEntry.get()!="":
@@ -67,11 +170,12 @@ def start():
           people.append(nEntry.get())
         preferences[nEntry.get()]=(str(pref1List[rows].get()),str(pref2List[rows].get()),str(pref3List[rows].get()))
         #Ensuring all guests have 3 preferences as to not skew weightings.
-        if pref1List[rows].get()=="" or pref2List[rows].get()=="" or pref3List[rows].get()=="":
-          errorText.set("Empty Preference")
-          errorMessage.update()
-          raise
+        #if pref1List[rows].get()=="" or pref2List[rows].get()=="" or pref3List[rows].get()=="":
+        #  errorText.set("Empty Preference")
+        #  errorMessage.update()
+        #  raise
     #Assorted error checks.
+    print("boop")
     try:
       int(tableSize.get())
     except:
@@ -199,20 +303,29 @@ def start():
     internalCopy=list(combinedMutualAndOptions)
     finished=[]
     forbidden=[]
+    print("bop")
+    timeout=0
     while internalCopy!=[]:
       intermediary=[]
-      timeout=0
       for singleGroupWithOptions in internalCopy:
         weightedOptions=list(singleGroupWithOptions)
         #Combining the selected group with its most optimal partner and pushing it to a temporary list, internal2
         #We loop this section repeatedly, until no more combinations are available.
         compGroup=weightedOptions.pop(0)
         weightedOptions.sort(key=takeSecond, reverse=True)
+        print("\n \n \n")
+        print(compGroup)
+        print("=============")
+        if compGroup in forbidden:
+          print("Forbidden")
+          continue
         internal2=list(weightedOptions)
         #We need to prevent groups (and their selected option) that have already been sorted, so we add it to forbidden.
         #If the program encounters a group in forbidden at any point, it'll break out of that loop.
         for counter,element in enumerate(weightedOptions):
+          print(element)
           if element[1] in forbidden:
+            print("^ forbidden")
             internal2.remove(element)
         weightedOptions=list(internal2)
         if weightedOptions!=[]:
@@ -220,33 +333,36 @@ def start():
           intermediary.append(compGroup+selectedOption)
           forbidden.append(compGroup)
           forbidden.append(selectedOption)
-        if weightedOptions==[] and len(singleGroupWithOptions[0])>2:
+        if weightedOptions==[] and len(singleGroupWithOptions[0])>1:
           finished.append(compGroup)
           forbidden.append(compGroup)
+          print(compGroup)
+          print("^ finished Group")
         else:
           intermediary.append(compGroup)
-        timeout+=1
-        if timeout>100:
-          print("timed out")
-          raise
       internalCopy=list(combineForSort(intermediary))
       internalCopy.sort(key=worthKey, reverse=True)
     #Generating a box for the output.
-    outputString="No Data Input"
+    outputString=StringVar()
+    outputString.set("No Data Input")
     for end in finished:
-      if outputString=="No Data Input":
-        outputString="Tables:"
-      outputString=outputString+"\n"+str(end)
-    output=Message(root,bg="WHITE",text=outputString,justify="left",relief="sunken",width=100)
-    output.grid(columnspan=4,row=rowCounter+3,column=0,pady=10,padx=10,sticky=W)
+      print(end)
+      if outputString.get()=="No Data Input":
+        outputString.set("Tables:")
+      outputString.set(outputString.get()+"\n\n"+str(end))
+    output=Message(root,bg="WHITE",width=490,textvariable=outputString,justify="left",relief="sunken")
+    output.grid(row=rowCounter+3,column=0,columnspan=4,pady=10,padx=10,sticky=W)
     root.update()
-    root.minsize(root.winfo_width(), root.winfo_height()+60)
-    root.maxsize(root.winfo_width(), root.winfo_height()+60)
+    root.geometry("")
+    root.minsize(root.winfo_width(), root.winfo_height())
   #Function to add more rows when the user types into the bottom row.
   def addRow(key):
     global rowCounter
+    for widget in root.winfo_children():
+      if isinstance(widget,Message):
+        widget.destroy()
     nameEntry=Entry(root)
-    nameEntry.grid(column=0,row=rowCounter+3)
+    nameEntry.grid(column=0,row=rowCounter+3,pady=1)
     nameList.append(nameEntry)
     pref1Entry=Entry(root)
     pref1List.append(pref1Entry)
@@ -260,9 +376,10 @@ def start():
     rowCounter=rowCounter+1
     nameList[-1].bind("<Key>", addRow)
     nameList[-2].unbind("<Key>")
+    root.geometry("")
     root.update()
-    root.minsize(root.winfo_width(), root.winfo_height()+20)
-    root.maxsize(root.winfo_width(), root.winfo_height()+20)
+    root.minsize(root.winfo_width(), root.winfo_height()+10)
+#    root.maxsize(root.winfo_width(), root.winfo_height()+10)
   #Generating buttons.
   runButton=Button(root,text="Execute",bg="WHITE",fg="BLACK",command=execute)
   runButton.configure(height=1,width=8)
@@ -273,7 +390,7 @@ def start():
   clearButton.grid(row=1,column=3,sticky=SE)
   root.update()
   root.minsize(root.winfo_width()+10, root.winfo_height())
-  root.maxsize(root.winfo_width()+10, root.winfo_height())
+#  root.maxsize(root.winfo_width()+10, root.winfo_height())
   root.mainloop()
 #Function for the restart button
 def restart():
