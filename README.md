@@ -62,7 +62,7 @@ Also have never used github before, so I've probably messed it up somehow.
   Email;   liurjk@gmail.com
   Discord; Desync#6290
 
-===============
+## INFO
 WRITTEN IN PYTHON 3.8.1
 CREATED BY Ryan JK Liu/Desync
 SOURCE CODE AVAILABLE AT: <https://github.com/LordDesync/seating_planner>
