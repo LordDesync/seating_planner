@@ -151,8 +151,9 @@ for vertex in adj_list:
     dfs(adj_list, visited, vertex, result, vertex)
 mutPref=list(result.values())
 
-#Splitting tables that are too large
+#Splitting subgroups that are too large
 #Function has to be in 2 pieces, or the returned value is a tuple (causes issues with bin packing later)
+#Currently splits list in half, but can change to a random point later on to introduce a genetic element
 def splitHalf1(listIn):
     half = len(listIn)//2
     return listIn[:half]
@@ -173,22 +174,23 @@ def bysize(words, size):
     return [word for word in words if len(word) == size]
 
 #Listing all possible other group placements for each group in mutPref
-fitOptions=[]
-for aGroup in mutPref:
-  c=0
-  fit=[]
-  while c<(seatingMax-len(aGroup)):
-    fit.extend(bysize(mutPref,seatingMax-(len(aGroup)+c)))
-    c=c+1
-  if aGroup in fit:
-    fit.remove(aGroup)
-    #Stops group from being matched with itself
-  fitNoNull=[n for n in fit if n]
-  fitOptions.append(fitNoNull)
+def createOptionList(inputGroupList):
+  fitOptions=[]
+  for aGroup in inputGroupList:
+    c=0
+    fit=[]
+    while c<(seatingMax-len(aGroup)):
+      fit.extend(bysize(inputGroupList,seatingMax-(len(aGroup)+c)))
+      c=c+1
+    if aGroup in fit:
+      fit.remove(aGroup)
+    fitNoNull=[n for n in fit if n]
+    fitOptions.append(fitNoNull)
+  return fitOptions
 
 #Function to determine compatibility between possible group pairings
 #Returned value, worthGroup, is a list containing lists of tuples of possible matches per table with element index 0 (of each tuple) being their relative compatibility. Groups with compatibility 0 are pruned. If a fixedGroup has no matching groups, an empty list is returned at its index.
-def detFit (setGroups, testGroups):
+def detFit(setGroups, testGroups):
   worthGroup=[]
   for fxgCount,fixedGroup in enumerate(setGroups):
     listTogether=[]
@@ -206,14 +208,15 @@ def detFit (setGroups, testGroups):
       listTogether.append([q for q in goodMatch])
     worthGroup.append([r for r in listTogether if r])
   return worthGroup
-#print(detFit(mutPref, fitOptions))
 
-#Have to combine the two lists together before sorting, then separate them again to keep the matching groups together during the sort.
-combinedMutualAndOptions=[]
-for counter,groupOptions in enumerate(detFit(mutPref, fitOptions)):
-  skippedVal=list(groupOptions)
-  skippedVal.insert(0,mutPref[counter])
-  combinedMutualAndOptions.append(skippedVal)
+#Have to combine the two lists together to keep the matching groups together during the sort.
+def combineForSort(unsortedList):
+  groupWithOptionsWeighted=[]
+  for counter,groupOptions in enumerate(detFit(unsortedList, createOptionList(unsortedList))):
+    skippedVal=list(groupOptions)
+    skippedVal.insert(0,unsortedList[counter])
+    groupWithOptionsWeighted.append(skippedVal)
+  return groupWithOptionsWeighted
 
 #Outputs maximum worth value of a sublist
 #This is to assign higher priority to groups with higher worths first
@@ -226,18 +229,72 @@ def worthKey(inputlist):
       maximum=sublist[0]
   return maximum
 
-# take second element for sort
+# take second element for later sort
 def takeSecond(elem):
   return elem[0]
 
-
+combinedMutualAndOptions=list(combineForSort(mutPref))
 combinedMutualAndOptions.sort(key=worthKey, reverse=True)
-for counter,singleMutualWithOptions in enumerate(combinedMutualAndOptions):
-  weightedOptions=list(singleMutualWithOptions)
-  compGroup=weightedOptions.pop(0)
-  weightedOptions.sort(key=takeSecond, reverse=True)
-  #sorting the options by worth values
-  group1=singleMutualWithOptions[0]
-  print(group1)
-  print(weightedOptions)
-  print("\n")
+
+internalCopy=list(combinedMutualAndOptions)
+#print(internalCopy)
+#print("\n \n \n \n \n")
+finished=[]
+forbidden=[]
+while internalCopy!=[]:
+  intermediary=[]
+  for singleGroupWithOptions in internalCopy:
+    weightedOptions=list(singleGroupWithOptions)
+    compGroup=weightedOptions.pop(0)
+    weightedOptions.sort(key=takeSecond, reverse=True)
+    print("\n \n \n")
+    print(compGroup)
+    print("=============")
+    if compGroup in forbidden:
+      print("Forbidden")
+      continue
+    print(weightedOptions)
+    for counter,element in enumerate(weightedOptions):
+      print(element)
+      if element[1] in forbidden:
+        print("^ forbidden")
+        ##########weightedOptions.pop(counter)
+    if weightedOptions!=[]:
+      selectedOption=weightedOptions[0][1]
+      intermediary.append(compGroup+selectedOption)
+      forbidden.append(compGroup)
+      forbidden.append(selectedOption)
+    if weightedOptions==[]:
+      finished.append(compGroup)
+      forbidden.append(compGroup)
+      print(compGroup)
+      print("^ finished Group")
+  print("\n \n \n \n \n")
+  internalCopy=list(combineForSort(intermediary))
+  internalCopy.sort(key=worthKey, reverse=True)
+print(finished)
+
+#print(detFit(mutPref, createOptionList(mutPref)))
+#print("\n \n \n \n \n")
+#print(combineForSort(mutPref))
+
+
+'''
+#Extracting the worth values to group
+for index, setgroups in enumerate(mutPref):
+#  for pop,possiblePair in enumerate(detFit(mutPref, fitOptions)[index]):
+  happiness=detFit(mutPref, fitOptions)[index]
+  print(happiness)
+#  print("\n")
+
+'''
+
+
+#All the sad lonely people who didn't get paired up at the beginning
+#pepehands
+#https://xkcd.com/314/
+ungroupedPeople=list(people)
+for singledPerson in people:
+  if any(singledPerson in p for p in mutPref):
+    ungroupedPeople.remove(singledPerson)
+print(ungroupedPeople)
