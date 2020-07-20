@@ -135,20 +135,20 @@ for pair in itertools.combinations(people,2):
 #Combining tuples which share a common element in to list mutPair
 #Combining tuples sharing elements is equivalent to finding connected trees in a graph
 def dfs(adj_list, visited, vertex, result, key):
-    visited.add(vertex)
-    result[key].append(vertex)
-    for neighbor in adj_list[vertex]:
-        if neighbor not in visited:
-            dfs(adj_list, visited, neighbor, result, key)
+  visited.add(vertex)
+  result[key].append(vertex)
+  for neighbor in adj_list[vertex]:
+    if neighbor not in visited:
+      dfs(adj_list, visited, neighbor, result, key)
 adj_list = defaultdict(list)
 for x, y in mutPair:
-    adj_list[x].append(y)
-    adj_list[y].append(x)
+  adj_list[x].append(y)
+  adj_list[y].append(x)
 result = defaultdict(list)
 visited = set()
 for vertex in adj_list:
-    if vertex not in visited:
-        dfs(adj_list, visited, vertex, result, vertex)
+  if vertex not in visited:
+    dfs(adj_list, visited, vertex, result, vertex)
 mutPref=list(result.values())
 
 #Splitting tables that are too large
@@ -208,14 +208,15 @@ def detFit (setGroups, testGroups):
   return worthGroup
 #print(detFit(mutPref, fitOptions))
 
-
 #Have to combine the two lists together before sorting, then separate them again to keep the matching groups together during the sort.
 combinedMutualAndOptions=[]
 for counter,groupOptions in enumerate(detFit(mutPref, fitOptions)):
   skippedVal=list(groupOptions)
   skippedVal.insert(0,mutPref[counter])
   combinedMutualAndOptions.append(skippedVal)
-#Outputs maximum worth value
+
+#Outputs maximum worth value of a sublist
+#This is to assign higher priority to groups with higher worths first
 def worthKey(inputlist):
   maximum=0
   for counter,sublist in enumerate(inputlist):
@@ -225,59 +226,18 @@ def worthKey(inputlist):
       maximum=sublist[0]
   return maximum
 
+# take second element for sort
+def takeSecond(elem):
+  return elem[0]
+
+
 combinedMutualAndOptions.sort(key=worthKey, reverse=True)
 for counter,singleMutualWithOptions in enumerate(combinedMutualAndOptions):
+  weightedOptions=list(singleMutualWithOptions)
+  compGroup=weightedOptions.pop(0)
+  weightedOptions.sort(key=takeSecond, reverse=True)
+  #sorting the options by worth values
   group1=singleMutualWithOptions[0]
-#  print(singleMutualWithOptions)
-#  print("\n")
-
-
-
-'''
-#Extracting the worth values to group
-for index, setgroups in enumerate(mutPref):
-#  for pop,possiblePair in enumerate(detFit(mutPref, fitOptions)[index]):
-  happiness=detFit(mutPref, fitOptions)[index]
-  print(happiness)
-#  print("\n")
-
-'''
-
-
-
-
-'''
-
-#All the sad lonely people who didn't get paired up at the beginning
-#pepehands
-#https://xkcd.com/314/
-ungroupedPeople=list(people)
-for singledPerson in people:
-  if any(singledPerson in p for p in mutPref):
-    ungroupedPeople.remove(singledPerson)
-print(ungroupedPeople)
-
-
-
-
-
-worthTable=copy.deepcopy(fitOptions)
-for i,grouped in enumerate(mutPref):
-  #grouped = one mutual-friend-group
-  worth=0
-  for person in grouped:
-    #person = someone in a mutual-friend-group
-      #fitOptions[i] returns a list of groups that can possibly be sat with the list "grouped"
-    for c,singleGroup in enumerate(fitOptions[i]):
-      #singleGroup is one group that can be sat with "grouped"
-      for optPerson in singleGroup:
-        if preferences[person] in singleGroup:
-          worth=worth+1
-        #optPerson is one person from singleGroup
-  for matchingGroup in worthTable[i]:
-    matchingGroup.insert(0,worth)
-#    if element in (item for sublist in fitOptions for item in sublist)
-  print("Group "+str(grouped))
-  print(str(worthTable[i])+"\n \n \n")
-
-'''
+  print(group1)
+  print(weightedOptions)
+  print("\n")
