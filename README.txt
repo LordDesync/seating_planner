@@ -72,8 +72,7 @@ CONTACT
 
   Email;   liurjk@gmail.com
   Discord; Desync#6290
-
-
 ===============
 WRITTEN IN PYTHON 3.8.1
 CREATED BY Ryan JK Liu/Desync
+SOURCE CODE AVAILABLE AT: <https://github.com/LordDesync/seating_planner>
