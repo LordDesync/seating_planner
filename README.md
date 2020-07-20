@@ -17,7 +17,7 @@ Enter:<br>
 
 Please distinguish between guests with identical first names where applicable; i.e.  use "Joe A" and "Joe B".<br>
 Additionally, all entries in any column or row are case sensitive. Take care when entering data.<br>
-Using special characters (#,",```,...) may possible cause undocumented behaviour.<br>
+Using special characters (#,",```,...) may possibly cause undocumented behaviour.<br>
 
 ## TROUBLESHOOTING
 
@@ -30,15 +30,15 @@ Using special characters (#,",```,...) may possible cause undocumented behaviour
 
 ## KNOWN ̶I̶S̶S̶U̶E̶S *INTENDED FEATURES*
 
-  DUE TO THE INHERENT UNPREDICTABLE VARIATION OF INPUT, THE PROGRAM MAY OCCASIONALLY OUTPUT VERY SMALL TABLES.
-  THESE ARE GENERALLY EASILY FIXED MANUALLY, AS OTHER GENERATED TABLES USUALLY HAVE SPARE SEATS.
+Due to the inherent unpredictable variation of input, the program may occasionally output very small tables.<br>
+These are generally easily fixed manually, as at least one other generated table will usually have spare seats.<br>
 
-  DUE TO COMPUTATIONAL LIMITATIONS AND TIME COMPLEXITY, IT IS NOT FEASIBLE TO PRODUCE AN ABSOLUTE OPTIMAL SOLUTION.
-  (SEE BIG O NOTATION AND SET PARTITIONING PROBLEM/K-COLOUR VERTEX COLOURING PROBLEM).
-  THIS PROGRAM WILL GENERATE A "GOOD" BUT NOT NECESSARILY OPTIMAL SOLUTION. MAKE MODIFICATIONS TO INAPPROPRIATE TABLES AT YOUR DISCRETION.
-  PROGRAM MAY TAKE SEVERAL SECONDS TO PRODUCE A RESULT, PARTICULARLY FOR LARGE EVENTS (>500 GUESTS).
+Due to computational limitations and time complexity, it is not feasible to produce an absolute optimal solution.<br>
+(See Big O notation and Set Partitioning problem/K-Colour Vertex Colouring problem)<br>
+This program will generate a "good" but not necessarily optimal solution. Make modifications to inappropriate tables at your discretion.
+Program may take several seconds to produce a result, particularly for large events (>500 guests).
 
-  IF YOU ENCOUNTER A BUG NOT MENTIONED, IT IS NOW A FEATURE.
+If you encounter a bug not mentioned, it is now a feature.
 
 ## INFO
 
@@ -59,8 +59,8 @@ Using special characters (#,",```,...) may possible cause undocumented behaviour
 
 ## CONTACT
 
-  Email;   liurjk@gmail.com<br>
-  Discord; Desync#6290
+Email;   liurjk@gmail.com<br>
+Discord; Desync#6290
 
 ## INFO
 WRITTEN IN PYTHON 3.8.1<br>
