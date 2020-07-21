@@ -28,7 +28,7 @@ Using special characters (#,",```,...) may possibly cause undocumented behaviour
 | NOT ENOUGH DATA   	| THE NUMBER ENTERED AT THE TOP IS GREATER THAN THE NUMBER OF GUESTS.<br>PLEASE NOTE THAT THE NUMBER AT THE TOP IS THE MAXIMUM NUMBER OF GUESTS *PER TABLE*, AND NOT TOTAL NUMBER OF GUESTS. 	| 
 | INVALID PREFERENCE    | THERE IS A PREFERENCE WHICH IS NOT ADDED AS A GUEST; e.g;<br>GUEST A WANTS TO SIT WITH GUEST B, BUT GUEST B IS NOT ENTERED IN THE NAMES COLUMN                                              | 
 
-## KNOWN ̶I̶S̶S̶U̶E̶S *INTENDED FEATURES*
+## KNOWN ~~ISSUES~~ *INTENDED FEATURES*
 
 Due to the inherent unpredictable variation of input, the program may occasionally output very small tables.<br>
 These are generally easily fixed manually, as at least one other generated table will usually have spare seats.<br>
