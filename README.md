@@ -42,7 +42,7 @@ If you encounter a bug not mentioned, it is now a feature.
 
 ## INFO
 
-    Copyright (C) 2020  Ryan Liu
+    Copyright (C) 2020 Ryan Liu
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
