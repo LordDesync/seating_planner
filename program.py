@@ -1,15 +1,11 @@
-import itertools;
+import itertools
 from collections import defaultdict
 from tkinter import *
 import webbrowser
-webbrowser.open("README.txt")
 #Whole program is in a function to allow for a restart button.
 def start():
-  global rowCounter
-  global preferences
-  global people
   global root
-  global output
+  global rowCounter
   #Generating the root window in tkinter.
   root=Tk()
   root.iconbitmap("lotus-icon.ico")
@@ -32,8 +28,8 @@ def start():
   spacer.grid(row=2)
   nameLabel=Label(root,text="Name:",bg=backcolour)
   preferenceLabel=Label(root,text="Preferences:",bg=backcolour)
-  nameLabel.place(x=10,y=52)
-  preferenceLabel.place(x=144,y=52)
+  nameLabel.place(x=10,y=45)
+  preferenceLabel.place(x=144,y=45)
   #Implementing scrollbar functionality for the entry field.
   outerFrame=Frame(root,width=505,height=200,bg=backcolour)
   outerFrame.grid(row=3,column=0,columnspan=4)
@@ -45,6 +41,8 @@ def start():
   entryFrame=Frame(canvas,bg=backcolour)
   entryFrame.grid(row=0,column=0,columnspan=4)
   canvas.create_window((0,0),window=entryFrame,anchor="nw")
+  fastMode=IntVar()
+  toggle=Checkbutton(root,text="Fast Mode?",variable=fastMode,bg=backcolour,activebackground=backcolour,anchor=W)
   def size(event):
     canvas.configure(scrollregion=canvas.bbox("all"),width=505,height=105)
   entryFrame.bind("<Configure>",size)
@@ -74,12 +72,15 @@ def start():
   people=[]
   preferences={}
   def execute():
+    global rowCounter
     for rows,nEntry in enumerate(nameList):
       if nEntry.get()!="":
         if nEntry.get() not in people:
           people.append(nEntry.get())
-        preferences[nEntry.get()]=(str(pref1List[rows].get()),str(pref2List[rows].get()),str(pref3List[rows].get()))
-        #Ensuring all guests have 3 preferences as to not skew weightings.
+        preferences[nEntry.get()]=(str(pref1List[rows].get()),
+                                   str(pref2List[rows].get()),
+                                   str(pref3List[rows].get())
+                                   )
     #Assorted error checks.
     try:
       int(tableSize.get())
@@ -103,7 +104,7 @@ def start():
         raise
       if pair[0] in preferences[pair[1]] and pair[1] in preferences[pair[0]]:
         mutPair.append(pair)
-    adj_list = defaultdict(list)#
+    adj_list = defaultdict(list)
     #Connecting all pairs which share common elements is equivalent to finding trees in a non-connected graph.
     #Function for depth-first-search is implemented to this end.
     def dfs(adj_list, visited, vertex, result, key):
@@ -152,7 +153,7 @@ def start():
     for element in ungroupedPeople:
       mutPref.append([element])
     #Fitting subgroups onto tables is equivalent to a bin packing problem.
-    #Bin packing by inspection is used.
+    #Popping elements form list of a given size for later use in bin packing.
     def bysize(words, size):
         return [word for word in words if len(word) == size]
     #Listing all possible other group placements for each group in mutPref.
@@ -213,19 +214,18 @@ def start():
     #This function returns it to help with sorting.
     def takeSecond(elem):
       return elem[0]
+
+    
     combinedMutualAndOptions=list(combineForSort(mutPref))
     combinedMutualAndOptions.sort(key=worthKey, reverse=True)
-    internalCopy=list(combinedMutualAndOptions)
-
     finished=[]
     forbidden=[]
-    timeout=0
-    while internalCopy!=[]:
+    print(combinedMutualAndOptions)
+
+    while combinedMutualAndOptions!=[] and fastMode.get()==1:
       intermediary=[]
-      for singleGroupWithOptions in internalCopy:
+      for singleGroupWithOptions in combinedMutualAndOptions:
         weightedOptions=list(singleGroupWithOptions)
-        #Combining the selected group with its most optimal partner and pushing it to a temporary list, internal2.
-        #We loop this section repeatedly, until no more combinations are available.
         compGroup=weightedOptions.pop(0)
         weightedOptions.sort(key=takeSecond, reverse=True)
         print("\n \n \n")
@@ -234,34 +234,84 @@ def start():
         if compGroup in forbidden:
           print("Forbidden")
           continue
-        internal2=list(weightedOptions)
+        removeForbidden=list(weightedOptions)
         #We need to prevent groups (and their selected option) that have already been sorted, so we add it to forbidden.
         #If the program encounters a group in forbidden at any point, it'll break out of that loop.
         for counter,element in enumerate(weightedOptions):
           print(element)
           if element[1] in forbidden:
             print("^ forbidden")
-            internal2.remove(element)
-        weightedOptions=list(internal2)
+            removeForbidden.remove(element)
+        weightedOptions=list(removeForbidden)
+        #Combining the selected group with its most optimal partner and pushing it to a temporary list, intermediary.
+        #We loop this section repeatedly, until no more combinations are available.
         if weightedOptions!=[]:
           selectedOption=weightedOptions[0][1]
           intermediary.append(compGroup+selectedOption)
           forbidden.append(compGroup)
           forbidden.append(selectedOption)
-        if weightedOptions==[] and len(singleGroupWithOptions[0])>1:
+        if weightedOptions==[]: #and len(singleGroupWithOptions[0])>1:
           finished.append(compGroup)
           forbidden.append(compGroup)
           print(compGroup)
           print("^ finished Group")
-        else:
-          intermediary.append(compGroup)
-      internalCopy=list(combineForSort(intermediary))
-      internalCopy.sort(key=worthKey, reverse=True)
+        #else:
+        #  intermediary.append(compGroup)
+      combinedMutualAndOptions=list(combineForSort(intermediary))
+      combinedMutualAndOptions.sort(key=worthKey, reverse=True)
+    
+    while combinedMutualAndOptions!=[] and fastMode.get()==0:
+      intermediary=[]
+      singleGroupWithOptions=combinedMutualAndOptions.pop(0)
+      weightedOptions=list(singleGroupWithOptions)
+      compGroup=weightedOptions.pop(0)
+      weightedOptions.sort(key=takeSecond, reverse=True)
+      #print(compGroup)
+      #print(weightedOptions)
+      #print("\n\n\n")
+      if compGroup in forbidden:
+        continue
+      removeForbidden=list(weightedOptions)
+      for option in weightedOptions:
+        if option[1] in forbidden:
+          removeForbidden.remove(option)
+      weightedOptions=list(removeForbidden)
+      if weightedOptions!=[]:
+        selectedOption=weightedOptions[0][1]
+        intermediary.append(compGroup+selectedOption)
+        forbidden.append(compGroup)
+        forbidden.append(selectedOption)
+      else:
+        intermediary.append(compGroup)
+      for group in combinedMutualAndOptions:
+        intermediary.append(group[0])
+      for element in intermediary:
+        if element in forbidden:
+          intermediary.remove(element)
+      checkFinished=list(combineForSort(list(intermediary)))
+      checkFinished.sort(key=worthKey, reverse=True)
+      for singleGroupWithOptions2 in checkFinished:
+        options=list(singleGroupWithOptions2)
+        checkGroup=options.pop(0)
+        if options==[]:
+          finished.append(checkGroup)
+          intermediary.remove(checkGroup)
+          forbidden.append(checkGroup)
+      combinedMutualAndOptions=[x for x in combineForSort(intermediary) if x]
+      combinedMutualAndOptions.sort(key=worthKey, reverse=True)
+      for group in combinedMutualAndOptions:
+        if group[0]==[]:
+          combinedMutualAndOptions.remove(group)
+      #print(intermediary)
+      #print("intermediary^^\n\n\n")
+      #print(singleGroupWithOptions)
+      #print("singlegroupwithoptions^^\n\n\n")
+      #combinedMutualAndOptions.append
+    print(finished)
     #Generating a StringVar to output tables.
     outputString=StringVar()
     outputString.set("No Data Input")
     for end in finished:
-      print(end)
       if outputString.get()=="No Data Input":
         outputString.set("Tables:")
       outputString.set(outputString.get()+"\n\n"+str(end))
@@ -311,18 +361,33 @@ def start():
     canvas.yview_moveto(1)
   #Generating various buttons.
   runButton=Button(root,text="Execute",bg="WHITE",fg="BLACK",command=execute)
-  runButton.configure(height=1,width=8)
-  runButton.grid(row=0,column=3,sticky=E,pady=1)
+  runButton.configure(height=1,width=18)
+  runButton.place(x=400,y=1)
+  spacer3=Label(root,bg=backcolour)
+  spacer4=Label(root,bg=backcolour)
+  spacer3.grid(row=0,column=2,pady=1,sticky=W)
+  spacer4.grid(row=1,column=2)
+  #runButton.grid(row=0,column=3,sticky=E,pady=1)
   nameList[-1].bind("<Key>", addRow)
   clearButton=Button(root,text="Clear All",bg="WHITE",fg="RED",command=restart)
   clearButton.configure(height=1,width=8)
-  clearButton.grid(row=1,column=3,sticky=SE)
+  clearButton.place(x=470,y=28)
+  #clearButton.grid(row=1,column=3,sticky=SE)
+  helpButton=Button(root,text="Help",bg="WHITE",fg="BLACK",command=openHelp)
+  helpButton.configure(height=1,width=8)
+  helpButton.place(x=400,y=28)
+  toggle.place(x=300,y=1)
   root.geometry("")
   root.update()
   root.minsize(root.winfo_width()+10, root.winfo_height()+10)
   root.mainloop()
+  
 #Function for the restart button
+def openHelp():
+  webbrowser.open("README.txt")
+
 def restart():
   root.destroy()
   start()
+openHelp()
 start()
