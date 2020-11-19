@@ -3,7 +3,7 @@ Program to assist in creating seating plans for various events.
 
 Written as part of an A-Level qualification.<br>
 I have never been formally taught Python; if you look at my source code, I am taking no responsibility for any damage done to brain.<br>
-Also have never used github before, so I've probably messed it up somehow.
+Also have never used github before, so I've probably messed it up somehow c:
 
 ## Program Usage
 
@@ -65,4 +65,4 @@ Discord; Desync#6290
 ## INFO
 WRITTEN IN PYTHON 3.8.1<br>
 CREATED BY Ryan JK Liu/Desync<br>
-SOURCE CODE AVAILABLE AT: <https://github.com/LordDesync/seating_planner>
+SOURCE CODE AVAILABLE AT: <https://github.com/DesyncTheThird/seating_planner>
